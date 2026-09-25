@@ -1,0 +1,4 @@
+html,body{background:var(--surface-page-canvas);color:var(--fg-1);font-family:var(--font-sans);font-feature-settings:var(--font-features);-webkit-font-smoothing:antialiased}
+a{color:var(--fg-1);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+::selection{background:var(--color-obsidian);color:var(--color-pure-white)}

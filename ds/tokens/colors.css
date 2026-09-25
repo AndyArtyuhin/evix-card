@@ -1,0 +1,49 @@
+:root{
+/* Base neutrals */
+--color-paper-white:#fafafa;
+--color-pure-white:#ffffff;
+--color-hairline:#ebebeb;
+--color-ash:#c9c9c9;
+--color-smoke:#a8a8a8;
+--color-graphite:#8f8f8f;
+--color-slate:#7d7d7d;
+--color-stone:#666666;
+--color-charcoal:#4d4d4d;
+--color-obsidian:#171717;
+--color-carbon:#000000;
+/* Accent */
+--color-terminal-green:#297a3a;
+/* Decorative gradients (marketing accents only) */
+--color-spectrum-gradient:#ff1744;
+--gradient-spectrum-gradient:linear-gradient(90deg,rgb(0,255,149) 0%,rgb(255,208,0) 25%,rgb(255,23,68) 50%,rgb(149,0,255) 75%,rgb(0,229,255) 100%); /* @kind color */
+--color-solar-edge:#ffdc30;
+--gradient-solar-edge:linear-gradient(90deg,rgb(255,220,48) 0%,rgb(56,162,255) 100%); /* @kind color */
+
+/* Semantic — foreground */
+--fg-1:var(--color-obsidian);
+--fg-2:var(--color-charcoal);
+--fg-3:var(--color-stone);
+--fg-muted:var(--color-graphite);
+--fg-disabled:var(--color-ash);
+--fg-placeholder:var(--color-smoke);
+--fg-inverse:var(--color-pure-white);
+--fg-accent:var(--color-terminal-green);
+--fg-mark:var(--color-carbon);
+
+/* Semantic — surfaces */
+--surface-page-canvas:var(--color-paper-white);
+--surface-card-surface:var(--color-pure-white);
+--surface-inverted-surface:var(--color-obsidian);
+--surface-input:var(--color-pure-white);
+
+/* Semantic — borders */
+--border-hairline:var(--color-hairline);
+--border-strong:var(--color-obsidian);
+
+/* Semantic — actions */
+--action-primary-bg:var(--color-obsidian);
+--action-primary-fg:var(--color-pure-white);
+--action-primary-bg-hover:#383838;
+--action-secondary-fg:var(--color-charcoal);
+--action-secondary-bg-hover:rgba(0,0,0,0.05);
+}

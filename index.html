@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>evixcard — Card Generator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="ds/tokens/fonts.css">
+  <link rel="stylesheet" href="ds/tokens/colors.css">
+  <link rel="stylesheet" href="ds/tokens/typography.css">
+  <link rel="stylesheet" href="ds/tokens/spacing.css">
+  <link rel="stylesheet" href="ds/tokens/effects.css">
+  <link rel="stylesheet" href="ds/tokens/base.css">
+  <link rel="stylesheet" href="ds/styles.css">
+  <script src="ds/_ds_bundle.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    @font-face { font-family: "Rooftop"; src: url("assets/Rooftop-Regular.otf"); font-weight: 400; }
+    @font-face { font-family: "Rooftop"; src: url("assets/Rooftop-Medium.otf"); font-weight: 500; }
+    @font-face { font-family: "Rooftop"; src: url("assets/Rooftop-Bold.otf"); font-weight: 700; }
+    body { margin: 0; background: #fafafa; }
+    a { color: #297a3a; text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  </style>
+</helmet>
+<div style="min-height: 100vh; background: #fafafa; color: #171717; font-family: Geist, Inter, sans-serif; font-feature-settings: 'calt' 0, 'rlig', 'ss11';">
+  <div style="max-width: 1280px; margin: 0 auto; padding: 48px 32px 96px; display: flex; flex-direction: column; gap: 40px;">
+    <header style="display: flex; flex-direction: column; gap: 20px;">
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <sc-for list="{{ platforms }}" as="pl" hint-placeholder-count="5">
+          <sc-if value="{{ pl.active }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ pl.pick }}" style="border: none; cursor: pointer; border-radius: 9999px; padding: 8px 16px; font-family: Geist, Inter, sans-serif; font-size: 14px; font-weight: 500; background: #171717; color: #ffffff;">{{ pl.name }}</button>
+          </sc-if>
+          <sc-if value="{{ pl.inactive }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ pl.pick }}" style="border: none; cursor: pointer; border-radius: 9999px; padding: 8px 16px; font-family: Geist, Inter, sans-serif; font-size: 14px; font-weight: 500; background: #ffffff; color: #4d4d4d; box-shadow: 0 0 0 1px #ebebeb;" style-hover="background: rgba(0,0,0,.05); color: #171717;">{{ pl.name }}</button>
+          </sc-if>
+          <sc-if value="{{ pl.disabled }}" hint-placeholder-val="{{ true }}">
+            <button disabled="{{ true }}" style="border: none; cursor: default; border-radius: 9999px; padding: 8px 16px; font-family: Geist, Inter, sans-serif; font-size: 14px; font-weight: 500; background: transparent; color: #a8a8a8; box-shadow: 0 0 0 1px #ebebeb;">{{ pl.name }}</button>
+          </sc-if>
+        </sc-for>
+      </div>
+    </header>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+      <div style="flex: 1 1 300px; max-width: 380px; display: flex; flex-direction: column; gap: 16px; background: #ffffff; border-radius: 6px; padding: 24px; box-shadow: 0 0 0 1px rgba(0,0,0,.08), 0 0 0 2px #fafafa;">
+        <label style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.071em; text-transform: uppercase; color: #666666;">Denominations</label>
+        <textarea value="{{ text }}" onChange="{{ onText }}" rows="8" placeholder="5, 10, 25, 50, 100" style="width: 100%; box-sizing: border-box; resize: vertical; border: none; outline: none; border-radius: 6px; padding: 12px; font-family: 'Geist Mono', monospace; font-size: 14px; line-height: 1.6; color: #171717; background: #ffffff; box-shadow: 0 0 0 1px #ebebeb;"></textarea>
+        <label style="font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.071em; text-transform: uppercase; color: #666666;">Currency</label>
+        <input value="{{ currency }}" onChange="{{ onCurrency }}" placeholder="SZK" style="width: 100%; box-sizing: border-box; border: none; outline: none; border-radius: 6px; padding: 10px 12px; font-family: 'Geist Mono', monospace; font-size: 14px; color: #171717; background: #ffffff; box-shadow: 0 0 0 1px #ebebeb;">
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <sc-for list="{{ presets }}" as="p" hint-placeholder-count="6">
+            <sc-if value="{{ p.active }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ p.pick }}" style="border: none; cursor: pointer; border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ebebeb; color: #171717;">{{ p.label }}</button>
+            </sc-if>
+            <sc-if value="{{ p.inactive }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ p.pick }}" style="border: none; cursor: pointer; border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ffffff; color: #4d4d4d; box-shadow: 0 0 0 1px #ebebeb;" style-hover="background: rgba(0,0,0,.05); color: #171717;">{{ p.label }}</button>
+            </sc-if>
+          </sc-for>
+        </div>
+        <sc-if value="{{ hasInvalid }}" hint-placeholder-val="{{ false }}">
+          <div style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #4d4d4d;">✕ skipped: {{ invalidLabel }}</div>
+        </sc-if>
+        <x-import component-from-global-scope="PaperTerminalDesignSystem_791a9e.Button" variant="primary" size="lg" disabled="{{ zipDisabled }}" onClick="{{ downloadZip }}" dc-props="{{ btnProps }}" style="width: 100%; display: flex;" hint-size="100%,48px">{{ zipLabel }}</x-import>
+        <sc-if value="{{ doneMsg }}" hint-placeholder-val="{{ false }}">
+          <div style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #297a3a;">✓ {{ doneMsg }}</div>
+        </sc-if>
+      </div>
+      <div style="flex: 999 1 400px; min-width: 0;">
+        <sc-if value="{{ noTpl }}" hint-placeholder-val="{{ false }}">
+          <div style="border-radius: 6px; padding: 48px 24px; text-align: center; color: #666666; font-size: 14px; box-shadow: 0 0 0 1px #ebebeb;">{{ noTplMsg }}</div>
+        </sc-if>
+        <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="border-radius: 6px; padding: 48px 24px; text-align: center; color: #666666; font-size: 14px; box-shadow: 0 0 0 1px #ebebeb;">Cards will appear here</div>
+        </sc-if>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px;">
+          <sc-for list="{{ cards }}" as="card" hint-placeholder-count="0">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="aspect-ratio: 2 / 3; border-radius: 6px; overflow: hidden; background: #ebebeb; box-shadow: 0 0 0 1px rgba(0,0,0,.08), 0 0 0 2px #fafafa;">
+                <sc-if value="{{ card.hasUrl }}" hint-placeholder-val="{{ false }}">
+                  <img src="{{ card.url }}" alt="{{ card.label }}" style="width: 100%; height: 100%; display: block; object-fit: cover;">
+                </sc-if>
+              </div>
+              <div style="display: flex; justify-content: flex-start; align-items: center; font-family: 'Geist Mono', monospace; font-size: 12px;">
+                <a href="{{ card.url }}" download="{{ card.file }}" style="color: #666666; text-decoration: none;" style-hover="color: #171717; text-decoration: underline; text-underline-offset: 3px;">Download PNG</a>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  static PREFIX = ['$', '€', '£', '¥', '₹', '₩', '₱', '₪', 'US$', 'A$', 'C$'];
+  static PLATFORMS = ['Eneba', 'G2A', 'Kinguin', 'Driffle', 'K2G'];
+  static TEMPLATES = { Eneba: 'assets/eneba-template.png' };
+  static LS = 'evix-card-gen-v2';
+  state = (() => {
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(Component.LS)) || {}; } catch (e) {}
+    const data = {};
+    Component.PLATFORMS.forEach(p => { data[p] = Object.assign({ text: '5, 10, 15, 20, 25, 50, 100', currency: 'SZK' }, (saved.data || {})[p]); });
+    const pl = 'Eneba';
+    return { platform: pl, data, text: data[pl].text, currency: data[pl].currency, tpls: {}, urls: {}, busy: false, doneMsg: '' };
+  })();
+  cache = {};
+  imgs = {};
+  save() {
+    try { localStorage.setItem(Component.LS, JSON.stringify({ platform: this.state.platform, data: this.state.data })); } catch (e) {}
+  }
+  loadImg(src) {
+    const im = new Image(); im.src = src;
+    return new Promise(r => { im.onload = () => r(im); im.onerror = () => r(null); if (im.complete && im.naturalWidth) r(im); });
+  }
+  setField(k, val) {
+    const p = this.state.platform;
+    const data = { ...this.state.data, [p]: { ...this.state.data[p], [k]: val } };
+    this.setState({ [k]: val, data, doneMsg: '' }, () => { this.save(); this.renderAll(); });
+  }
+  pickPlatform(p) {
+    const d = this.state.data[p];
+    this.setState({ platform: p, text: d.text, currency: d.currency, doneMsg: '' }, () => { this.save(); this.renderAll(); });
+  }
+  onTpl(e) {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    const p = this.state.platform;
+    const rd = new FileReader();
+    rd.onload = () => {
+      const url = rd.result;
+      try { localStorage.setItem(Component.LS + '-tpl-' + p, url); } catch (err) {}
+      this.loadImg(url).then(im => { this.imgs[p] = im; this.setState({ tpls: { ...this.state.tpls, [p]: f.name } }, () => this.renderAll()); });
+    };
+    rd.readAsDataURL(f);
+    e.target.value = '';
+  }
+  get img() { return this.imgs[this.state.platform]; }
+  componentDidMount() {
+    const tplLoads = Component.PLATFORMS.map(p => {
+      const u = localStorage.getItem(Component.LS + '-tpl-' + p);
+      return u ? this.loadImg(u).then(im => { this.imgs[p] = im; this.setState(s => ({ tpls: { ...s.tpls, [p]: 'свой шаблон' } })); }) : null;
+    });
+    const imgReady = Promise.all(Object.entries(Component.TEMPLATES).map(([p, src]) => this.loadImg(src).then(im => { if (!this.imgs[p]) this.imgs[p] = im; })));
+    Promise.all(tplLoads).catch(() => {});
+    const files = { 400: 'Regular', 500: 'Medium', 700: 'Bold' };
+    const fonts = Object.entries(files).map(([w, n]) =>
+      new FontFace('RooftopCard', `url(assets/Rooftop-${n}.otf)`, { weight: w }).load().then(f => document.fonts.add(f)).catch(() => {}));
+    Promise.all([imgReady, ...fonts]).then(() => {
+      const c = document.createElement('canvas').getContext('2d');
+      c.font = '700 100px RooftopCard';
+      this.capRatio = c.measureText('H').actualBoundingBoxAscent / 100 || 0.7;
+      this.cache = {}; this.ready = true; this.renderAll();
+    });
+  }
+  componentDidUpdate(pp, ps) {
+    if (ps.text !== this.state.text || ps.currency !== this.state.currency || JSON.stringify(pp) !== JSON.stringify(this.props)) this.renderAll();
+  }
+  opts() {
+    return { currency: this.state.currency.trim(), weight: 700, size: 64, baseline: 835, maxW: 250 };
+  }
+  parse() {
+    const valid = [], invalid = [], seen = new Set();
+    this.state.text.split(/[\s,;]+/).filter(Boolean).forEach(t => {
+      const v = t.replace(/[$€₽]/g, '');
+      if (/^\d+([.]\d{1,2})?$/.test(v) && parseFloat(v) > 0) {
+        if (!seen.has(v)) { seen.add(v); valid.push(v); }
+      } else invalid.push(t);
+    });
+    return { valid, invalid };
+  }
+  label(v) {
+    const c = this.opts().currency;
+    if (!c) return v;
+    return Component.PREFIX.includes(c) ? c + v : v + ' ' + c;
+  }
+  key(v) { const p = this.state.platform; return p + '|' + (this.state.tpls[p] || '') + '|' + v + '|' + JSON.stringify(this.opts()); }
+  draw(v) {
+    const o = this.opts();
+    const cv = document.createElement('canvas');
+    cv.width = 600; cv.height = 900;
+    const ctx = cv.getContext('2d');
+    ctx.drawImage(this.img, 0, 0, 600, 900);
+    const text = this.label(v);
+    let size = 45 / this.capRatio;
+    ctx.font = `${o.weight} ${size}px RooftopCard`;
+    const w = ctx.measureText(text).width;
+    if (w > o.maxW) { size = size * o.maxW / w; ctx.font = `${o.weight} ${size}px RooftopCard`; }
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText(text, 300, o.baseline);
+    return cv.toDataURL('image/png');
+  }
+  renderAll() {
+    if (!this.ready) return;
+    const urls = {};
+    if (!this.img) { this.setState({ urls }); return; }
+    this.parse().valid.forEach(v => {
+      const k = this.key(v);
+      if (!this.cache[k]) this.cache[k] = this.draw(v);
+      urls[v] = this.cache[k];
+    });
+    this.setState({ urls });
+  }
+  fileName(v) { const c = this.opts().currency; return `evixcard-${this.state.platform.toLowerCase()}-${v.replace('.', '_')}${c ? '-' + c.replace(/[^\w]/g, '') : ''}.png`; }
+  async downloadZip() {
+    const { valid } = this.parse();
+    if (!valid.length || !window.JSZip || !this.img) return;
+    this.setState({ busy: true, doneMsg: '' });
+    const zip = new JSZip();
+    valid.forEach(v => {
+      const url = this.state.urls[v] || this.draw(v);
+      zip.file(this.fileName(v), url.split(',')[1], { base64: true });
+    });
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `evixcard-${this.state.platform.toLowerCase()}-cards.zip`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    this.setState({ busy: false, doneMsg: `Downloaded ${valid.length} cards` });
+  }
+  renderVals() {
+    const { valid, invalid } = this.parse();
+    const n = valid.length;
+    const plural = n % 10 === 1 && n % 100 !== 11 ? 'карточка' : [2,3,4].includes(n % 10) && ![12,13,14].includes(n % 100) ? 'карточки' : 'карточек';
+    return {
+      text: this.state.text,
+      currency: this.state.currency,
+      onCurrency: e => this.setField('currency', e.target.value),
+      platforms: Component.PLATFORMS.map(p => {
+        const has = !!Component.TEMPLATES[p];
+        const act = p === this.state.platform;
+        return { name: p, active: act, inactive: !act && has, disabled: !act && !has, pick: () => this.pickPlatform(p) };
+      }),
+      platformName: this.state.platform,
+      tplLabel: this.state.tpls[this.state.platform] ? '✓ ' + this.state.tpls[this.state.platform] : 'по умолчанию (PayPal)',
+      onTpl: e => this.onTpl(e),
+      presets: ['$', '€', '£', 'USD', 'EUR', 'SZK'].map(c => ({
+        label: c,
+        active: this.state.currency.trim() === c,
+        inactive: this.state.currency.trim() !== c,
+        pick: () => this.setField('currency', c),
+      })),
+      onText: e => this.setField('text', e.target.value),
+      noTpl: !Component.TEMPLATES[this.state.platform] && !this.state.tpls[this.state.platform],
+      noTplMsg: `No ${this.state.platform} template yet`,
+      cards: (!Component.TEMPLATES[this.state.platform] && !this.state.tpls[this.state.platform]) ? [] : valid.map(v => ({ label: this.label(v), url: this.state.urls[v] || '', hasUrl: !!this.state.urls[v], file: this.fileName(v) })),
+      countLabel: `${n} ${plural}`,
+      hasInvalid: invalid.length > 0,
+      invalidLabel: invalid.slice(0, 5).join(', ') + (invalid.length > 5 ? '…' : ''),
+      isEmpty: n === 0,
+      zipDisabled: n === 0 || this.state.busy || (!Component.TEMPLATES[this.state.platform] && !this.state.tpls[this.state.platform]),
+      zipLabel: this.state.busy ? 'Building archive…' : 'Download .zip',
+      downloadZip: () => this.downloadZip(),
+      btnProps: { style: { width: '100%', justifyContent: 'center' } },
+      doneMsg: this.state.doneMsg,
+    };
+  }
+}
+</script>
+</body>
+</html>
