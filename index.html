@@ -30,7 +30,7 @@
 </helmet>
 <div style="min-height: 100vh; background: #fafafa; color: #171717; font-family: Geist, Inter, sans-serif; font-feature-settings: 'calt' 0, 'rlig', 'ss11';">
   <div style="max-width: 1280px; margin: 0 auto; padding: 24px 32px 64px; display: flex; flex-direction: column; gap: 24px;">
-    <header style="display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: 24px; align-items: center;">
+    <header style="display: grid; grid-template-columns: minmax(280px, 356px) minmax(0, 1fr); gap: 24px; align-items: center;">
       <div style="max-width: 380px; display: flex; align-items: center;">
         <img src="assets/logo-symbol.svg" alt="evixcard" style="display: block; width: 30px; height: 30px;">
       </div>
@@ -52,33 +52,33 @@
       </div>
       </div>
     </header>
-    <div style="display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: 24px; align-items: start;">
-      <div style="flex: 1 1 300px; max-width: 380px; display: flex; flex-direction: column; gap: 16px; background: #ffffff; border-radius: 6px; padding: 24px; box-shadow: 0 0 0 1px rgba(0,0,0,.08), 0 0 0 2px #fafafa;">
+    <div style="display: grid; grid-template-columns: minmax(280px, 356px) minmax(0, 1fr); gap: 24px; align-items: start;">
+      <div style="flex: 1 1 300px; max-width: 356px; display: flex; flex-direction: column; gap: 16px; background: #ffffff; border-radius: 6px; padding: 24px; box-shadow: 0 0 0 1px rgba(0,0,0,.08), 0 0 0 2px #fafafa;">
         <label style="font-family: 'Geist Mono', monospace; font-size: 14px; letter-spacing: 0.05em; text-transform: uppercase; color: #4d4d4d;">Brand</label>
         <div style="display: flex; flex-wrap: wrap; gap: 8px;">
           <sc-for list="{{ brands }}" as="p" hint-placeholder-count="4">
             <sc-if value="{{ p.active }}" hint-placeholder-val="{{ false }}">
-              <button onClick="{{ p.pick }}" style="border: none; cursor: pointer; border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ebebeb; color: #171717;">{{ p.name }}</button>
+              <button onClick="{{ p.pick }}" style="flex: 1 1 auto; border: none; cursor: pointer; border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ebebeb; color: #171717;">{{ p.name }}</button>
             </sc-if>
             <sc-if value="{{ p.inactive }}" hint-placeholder-val="{{ true }}">
-              <button onClick="{{ p.pick }}" style="border: none; cursor: pointer; border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ffffff; color: #4d4d4d; box-shadow: 0 0 0 1px #ebebeb;" style-hover="background: rgba(0,0,0,.05); color: #171717;">{{ p.name }}</button>
+              <button onClick="{{ p.pick }}" style="flex: 1 1 auto; border: none; cursor: pointer; border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ffffff; color: #4d4d4d; box-shadow: 0 0 0 1px #ebebeb;" style-hover="background: rgba(0,0,0,.05); color: #171717;">{{ p.name }}</button>
             </sc-if>
             <sc-if value="{{ p.disabled }}" hint-placeholder-val="{{ false }}">
-              <button disabled="{{ true }}" style="border: none; cursor: default; border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; background: transparent; color: #a8a8a8; box-shadow: 0 0 0 1px #ebebeb;">{{ p.name }}</button>
+              <button disabled="{{ true }}" style="flex: 1 1 auto; border: none; cursor: default; border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; background: transparent; color: #a8a8a8; box-shadow: 0 0 0 1px #ebebeb;">{{ p.name }}</button>
             </sc-if>
           </sc-for>
         </div>
         <label style="font-family: 'Geist Mono', monospace; font-size: 14px; letter-spacing: 0.05em; text-transform: uppercase; color: #4d4d4d;">Denominations</label>
-        <textarea value="{{ text }}" onChange="{{ onText }}" rows="3" placeholder="5, 10, 25, 50, 100" style="width: 100%; box-sizing: border-box; resize: vertical; border: none; outline: none; border-radius: 6px; padding: 12px; font-family: 'Geist Mono', monospace; font-size: 14px; line-height: 1.6; color: #171717; background: #ffffff; box-shadow: 0 0 0 1px #ebebeb;"></textarea>
+        <textarea value="{{ text }}" onChange="{{ onText }}" rows="3" placeholder="5, 10, 25, 50, 100" style="width: 100%; height: 96px; box-sizing: border-box; resize: none; overflow-y: auto; border: none; outline: none; border-radius: 6px; padding: 12px; font-family: 'Geist Mono', monospace; font-size: 14px; line-height: 1.6; color: #171717; background: #ffffff; box-shadow: 0 0 0 1px #ebebeb;"></textarea>
         <label style="font-family: 'Geist Mono', monospace; font-size: 14px; letter-spacing: 0.05em; text-transform: uppercase; color: #4d4d4d;">Currency</label>
         <input value="{{ currency }}" onChange="{{ onCurrency }}" placeholder="$" style="width: 100%; box-sizing: border-box; border: none; outline: none; border-radius: 6px; padding: 10px 12px; font-family: 'Geist Mono', monospace; font-size: 14px; color: #171717; background: #ffffff; box-shadow: 0 0 0 1px #ebebeb;">
         <div style="display: flex; flex-wrap: wrap; gap: 8px;">
           <sc-for list="{{ presets }}" as="p" hint-placeholder-count="6">
             <sc-if value="{{ p.active }}" hint-placeholder-val="{{ false }}">
-              <button onClick="{{ p.pick }}" style="border: none; cursor: pointer; border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ebebeb; color: #171717;">{{ p.label }}</button>
+              <button onClick="{{ p.pick }}" style="flex: 1 1 auto; border: none; cursor: pointer; border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ebebeb; color: #171717;">{{ p.label }}</button>
             </sc-if>
             <sc-if value="{{ p.inactive }}" hint-placeholder-val="{{ true }}">
-              <button onClick="{{ p.pick }}" style="border: none; cursor: pointer; border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ffffff; color: #4d4d4d; box-shadow: 0 0 0 1px #ebebeb;" style-hover="background: rgba(0,0,0,.05); color: #171717;">{{ p.label }}</button>
+              <button onClick="{{ p.pick }}" style="flex: 1 1 auto; border: none; cursor: pointer; border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ffffff; color: #4d4d4d; box-shadow: 0 0 0 1px #ebebeb;" style-hover="background: rgba(0,0,0,.05); color: #171717;">{{ p.label }}</button>
             </sc-if>
           </sc-for>
         </div>
@@ -100,19 +100,22 @@
         <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
           <div style="border-radius: 6px; padding: 48px 24px; text-align: center; color: #666666; font-size: 14px; box-shadow: 0 0 0 1px #ebebeb;">Cards will appear here</div>
         </sc-if>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; align-items: end;">
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
           <sc-for list="{{ cards }}" as="card" hint-placeholder-count="0">
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-              <div style="aspect-ratio: {{ card.ar }}; border-radius: 6px; overflow: hidden; background: #ebebeb;">
+            <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px; max-width: 100%;">
+              <div style="height: 240px; width: auto; align-self: flex-start; max-width: 100%; aspect-ratio: {{ card.ar }}; border-radius: 6px; overflow: hidden; background: #ebebeb;">
                 <sc-if value="{{ card.hasUrl }}" hint-placeholder-val="{{ false }}">
-                  <img src="{{ card.url }}" alt="{{ card.label }}" style="width: 100%; height: 100%; display: block; object-fit: cover;">
+                  <img src="{{ card.url }}" alt="{{ card.label }}" style="height: 100%; width: auto; display: block;">
                 </sc-if>
               </div>
-              <div style="display: flex; justify-content: space-between; gap: 8px; align-items: center; font-family: 'Geist Mono', monospace; font-size: 14px;">
+              <div style="align-self: stretch; display: flex; justify-content: space-between; gap: 8px; align-items: center; font-family: 'Geist Mono', monospace; font-size: 14px;">
                 <a href="{{ card.url }}" download="{{ card.file }}" style="color: #666666; text-decoration: none;" style-hover="color: #171717; text-decoration: underline; text-underline-offset: 3px;">Download PNG</a>
                 <span style="color: #a8a8a8; font-size: 12px;">{{ card.size }}</span>
               </div>
             </div>
+            <sc-if value="{{ card.brk }}" hint-placeholder-val="{{ false }}">
+              <div style="flex-basis: 100%; height: 0;"></div>
+            </sc-if>
           </sc-for>
         </div>
       </div>
@@ -152,9 +155,12 @@ class Component extends DCLogic {
     const topBottom = L[1].y + L[1].h, mid = (topBottom + H - ph) / 2;
     const cy = (W / H <= 0.8 ? 0.34 * H : mid - 0.02 * H) + (b === 'Visa' && W / H <= 0.8 ? 0.04 * H : 0);
     L.push({ src: B.logo, x: (W - w) / 2, y: cy - h / 2, w, h });
-    L.push({ src: 'assets/pattern-bab1d92f.svg', x: 0, y: H - ph, w: pw, h: ph, clip: [0, H - ph, 84 * s, ph] });
-    L.push({ src: 'assets/pattern-bab1d92f.svg', x: W - pw, y: H - ph, w: pw, h: ph, clip: [W - 84 * s, H - ph, 84 * s, ph] });
-    return { w: W, h: H, layers: L, num: { cap: 0.25 * ph, baseline: H - 0.365 * ph, maxW: W - 2 * 84 * s - 16 * s } };
+    const u = 84 * s, reps = land ? Math.max(1, Math.floor((W / 2 - 0.18 * W) / u)) : 1;
+    for (let k = 0; k < reps; k++) {
+      L.push({ src: 'assets/pattern-bab1d92f.svg', x: k * u, y: H - ph, w: pw, h: ph, clip: [k * u, H - ph, u, ph] });
+      L.push({ src: 'assets/pattern-bab1d92f.svg', x: W - pw - k * u, y: H - ph, w: pw, h: ph, clip: [W - u - k * u, H - ph, u, ph] });
+    }
+    return { w: W, h: H, layers: L, num: { cap: 0.25 * ph, baseline: H - 0.365 * ph, maxW: W - 2 * reps * u - 16 * s } };
   }
   static TEMPLATES = (() => {
     const T = {};
@@ -169,6 +175,15 @@ class Component extends DCLogic {
     ]),
     };
     Object.entries(eneba).forEach(([k, layers]) => { T[k] = [{ ...E, layers }]; });
+    Object.values(T).forEach(specs => specs.forEach(s => {
+      const { w: W, h: H } = s, k = Math.min(W / 323, (W / H > 0.8 ? 0.3 : 0.4) * H / 165), pw = 323 * k, ph = 165 * k;
+      const pat = [];
+      for (let x = 0; x < W; x += pw) pat.push({ src: 'assets/pattern-02.svg', x, y: H - ph, w: pw, h: ph });
+      const layers = s.layers.filter(l => !l.src.includes('pattern')).map(l => ({ ...l }));
+      const top = layers[1], logo = layers[2], gapBot = H - ph;
+      if (logo && logo.y + logo.h > gapBot - 0.06 * H) logo.y = (top.y + top.h + gapBot) / 2 - logo.h / 2;
+      s.base = { w: W, h: H, isBase: true, layers: [...layers, ...pat] };
+    }));
     return T;
   })();
   compose(spec) {
@@ -188,14 +203,14 @@ class Component extends DCLogic {
       return cv;
     });
   }
-  sk(spec) { return spec.w + 'x' + spec.h; }
+  sk(spec) { return spec.w + 'x' + spec.h + (spec.isBase ? '-base' : ''); }
   get specs() { return Component.TEMPLATES[this.tk] || []; }
   static LS = 'evix-card-gen-v3';
   state = (() => {
     let saved = {};
     try { saved = JSON.parse(localStorage.getItem(Component.LS)) || {}; } catch (e) {}
     const data = {};
-    Component.BRANDS.forEach(b => Component.PLATFORMS.forEach(p => { const k = b + '/' + p; data[k] = Object.assign({ text: '5, 10, 15, 20, 25, 50, 100', currency: '$' }, (saved.data || {})[k]); }));
+    Component.BRANDS.forEach(b => Component.PLATFORMS.forEach(p => { const k = b + '/' + p; data[k] = Object.assign({ text: '5, 10, 15, 20, 25, 50, 100', currency: '$' }, (saved.data || {})[k], { currency: '$' }); }));
     const k = 'PayPal/Eneba';
     return { brand: 'PayPal', platform: 'Eneba', data, text: data[k].text, currency: data[k].currency, tpls: {}, urls: {}, busy: false, doneMsg: '' };
   })();
@@ -238,7 +253,7 @@ class Component extends DCLogic {
 
   componentDidMount() {
     const tplLoads = [];
-    const imgReady = Promise.all(Object.entries(Component.TEMPLATES).flatMap(([k, specs]) => specs.map(s => this.compose(s).then(im => { this.imgs[k + '|' + this.sk(s)] = im; }))));
+    const imgReady = Promise.all(Object.entries(Component.TEMPLATES).flatMap(([k, specs]) => specs.flatMap(s => [s, s.base]).map(s => this.compose(s).then(im => { this.imgs[k + '|' + this.sk(s)] = im; }))));
     Promise.all(tplLoads).catch(() => {});
     const files = { 400: 'Regular', 500: 'Medium', 700: 'Bold' };
     const fonts = Object.entries(files).map(([w, n]) =>
@@ -279,6 +294,7 @@ class Component extends DCLogic {
     const ctx = cv.getContext('2d');
     const bg = this.imgs[this.tk + '|' + this.sk(s)];
     if (bg) ctx.drawImage(bg, 0, 0, s.w, s.h);
+    if (v == null) return cv.toDataURL('image/png');
     const text = this.label(v);
     let size = n.cap / this.capRatio;
     ctx.font = `${o.weight} ${size}px RooftopCard`;
@@ -290,7 +306,7 @@ class Component extends DCLogic {
     ctx.fillText(text, s.w / 2, n.baseline);
     return cv.toDataURL('image/png');
   }
-  items() { const out = []; this.parse().valid.forEach(v => this.specs.forEach(s => out.push({ v, s, id: v + '@' + this.sk(s) }))); return out; }
+  items() { const out = this.specs.map(s => ({ v: null, s: s.base, id: 'base@' + this.sk(s.base) })); this.parse().valid.forEach(v => this.specs.forEach(s => out.push({ v, s, id: v + '@' + this.sk(s) }))); return out; }
   renderAll() {
     if (!this.ready) return;
     const urls = {};
@@ -301,7 +317,7 @@ class Component extends DCLogic {
     });
     this.setState({ urls });
   }
-  fileName(v, s) { const c = this.opts().currency; return `evixcard-${this.state.brand.toLowerCase()}-${this.state.platform.toLowerCase()}-${this.sk(s)}-${v.replace('.', '_')}${c ? '-' + c.replace(/[^\w]/g, '') : ''}.png`; }
+  fileName(v, s) { if (v == null) return `evixcard-${this.state.brand.toLowerCase()}-${this.state.platform.toLowerCase()}-${this.sk(s)}.png`; const c = this.opts().currency; return `evixcard-${this.state.brand.toLowerCase()}-${this.state.platform.toLowerCase()}-${this.sk(s)}-${v.replace('.', '_')}${c ? '-' + c.replace(/[^\w]/g, '') : ''}.png`; }
   async downloadZip() {
     const list = this.items();
     if (!list.length || !window.JSZip) return;
@@ -349,14 +365,14 @@ class Component extends DCLogic {
       onText: e => this.setField('text', e.target.value),
       noTpl: !Component.TEMPLATES[this.tk],
       noTplMsg: `No ${this.state.brand} × ${this.state.platform} template yet`,
-      cards: this.items().map(({ v, s, id }) => ({ label: this.label(v), url: this.state.urls[id] || '', hasUrl: !!this.state.urls[id], file: this.fileName(v, s), ar: `${s.w} / ${s.h}`, size: this.specs.length > 1 ? `${s.w}×${s.h}` : '' })),
+      cards: this.items().map(({ v, s, id }) => ({ label: v == null ? 'Base' : this.label(v), url: this.state.urls[id] || '', hasUrl: !!this.state.urls[id], file: this.fileName(v, s), ar: `${s.w} / ${s.h}`, size: (v == null ? 'Base' : '') + (v == null && this.specs.length > 1 ? ' · ' : '') + (this.specs.length > 1 ? `${s.w}×${s.h}` : ''), brk: (v == null && this.specs.length === 1) || (this.specs.length > 1 && (s === this.specs[this.specs.length - 1] || s === this.specs[this.specs.length - 1].base)) })),
       countLabel: `${n} ${plural}`,
       hasInvalid: invalid.length > 0,
       hasDups: this.parse().dups.length > 0,
       dupLabel: `${n} unique · ${this.parse().dups.length} duplicates skipped`,
       invalidLabel: invalid.slice(0, 5).join(', ') + (invalid.length > 5 ? '…' : ''),
-      isEmpty: n === 0,
-      zipDisabled: n === 0 || this.state.busy || !Component.TEMPLATES[this.tk],
+      isEmpty: false,
+      zipDisabled: this.state.busy || !Component.TEMPLATES[this.tk],
       zipLabel: this.state.busy ? 'Building archive…' : 'Download .zip',
       downloadZip: () => this.downloadZip(),
       btnProps: { style: { width: '100%', justifyContent: 'center' } },
