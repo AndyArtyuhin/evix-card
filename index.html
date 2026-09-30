@@ -55,16 +55,16 @@
     <div style="display: grid; grid-template-columns: minmax(280px, 356px) minmax(0, 1fr); gap: 24px; align-items: start;">
       <div style="flex: 1 1 300px; max-width: 356px; display: flex; flex-direction: column; gap: 16px; background: #ffffff; border-radius: 6px; padding: 24px; box-shadow: 0 0 0 1px rgba(0,0,0,.08), 0 0 0 2px #fafafa;">
         <label style="font-family: 'Geist Mono', monospace; font-size: 14px; letter-spacing: 0.05em; text-transform: uppercase; color: #4d4d4d;">Brand</label>
-        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; flex-wrap: nowrap; gap: 8px;">
           <sc-for list="{{ brands }}" as="p" hint-placeholder-count="4">
             <sc-if value="{{ p.active }}" hint-placeholder-val="{{ false }}">
-              <button onClick="{{ p.pick }}" style="flex: 1 1 auto; border: none; cursor: pointer; border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ebebeb; color: #171717;">{{ p.name }}</button>
+              <button onClick="{{ p.pick }}" style="flex: 1 1 auto; border: none; cursor: pointer; border-radius: 6px; padding: 6px 8px; min-width: 0; white-space: nowrap; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ebebeb; color: #171717;">{{ p.name }}</button>
             </sc-if>
             <sc-if value="{{ p.inactive }}" hint-placeholder-val="{{ true }}">
-              <button onClick="{{ p.pick }}" style="flex: 1 1 auto; border: none; cursor: pointer; border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ffffff; color: #4d4d4d; box-shadow: 0 0 0 1px #ebebeb;" style-hover="background: rgba(0,0,0,.05); color: #171717;">{{ p.name }}</button>
+              <button onClick="{{ p.pick }}" style="flex: 1 1 auto; border: none; cursor: pointer; border-radius: 6px; padding: 6px 8px; min-width: 0; white-space: nowrap; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ffffff; color: #4d4d4d; box-shadow: 0 0 0 1px #ebebeb;" style-hover="background: rgba(0,0,0,.05); color: #171717;">{{ p.name }}</button>
             </sc-if>
             <sc-if value="{{ p.disabled }}" hint-placeholder-val="{{ false }}">
-              <button disabled="{{ true }}" style="flex: 1 1 auto; border: none; cursor: default; border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; background: transparent; color: #a8a8a8; box-shadow: 0 0 0 1px #ebebeb;">{{ p.name }}</button>
+              <button disabled="{{ true }}" style="flex: 1 1 auto; border: none; cursor: default; border-radius: 6px; padding: 6px 8px; min-width: 0; white-space: nowrap; font-family: 'Geist Mono', monospace; font-size: 13px; background: transparent; color: #a8a8a8; box-shadow: 0 0 0 1px #ebebeb;">{{ p.name }}</button>
             </sc-if>
           </sc-for>
         </div>
@@ -72,13 +72,13 @@
         <textarea value="{{ text }}" onChange="{{ onText }}" rows="3" placeholder="5, 10, 25, 50, 100" style="width: 100%; height: 96px; box-sizing: border-box; resize: none; overflow-y: auto; border: none; outline: none; border-radius: 6px; padding: 12px; font-family: 'Geist Mono', monospace; font-size: 14px; line-height: 1.6; color: #171717; background: #ffffff; box-shadow: 0 0 0 1px #ebebeb;"></textarea>
         <label style="font-family: 'Geist Mono', monospace; font-size: 14px; letter-spacing: 0.05em; text-transform: uppercase; color: #4d4d4d;">Currency</label>
         <input value="{{ currency }}" onChange="{{ onCurrency }}" placeholder="$" style="width: 100%; box-sizing: border-box; border: none; outline: none; border-radius: 6px; padding: 10px 12px; font-family: 'Geist Mono', monospace; font-size: 14px; color: #171717; background: #ffffff; box-shadow: 0 0 0 1px #ebebeb;">
-        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; flex-wrap: nowrap; gap: 8px;">
           <sc-for list="{{ presets }}" as="p" hint-placeholder-count="6">
             <sc-if value="{{ p.active }}" hint-placeholder-val="{{ false }}">
-              <button onClick="{{ p.pick }}" style="flex: 1 1 auto; border: none; cursor: pointer; border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ebebeb; color: #171717;">{{ p.label }}</button>
+              <button onClick="{{ p.pick }}" style="flex: 1 1 auto; border: none; cursor: pointer; border-radius: 6px; padding: 6px 8px; min-width: 0; white-space: nowrap; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ebebeb; color: #171717;">{{ p.label }}</button>
             </sc-if>
             <sc-if value="{{ p.inactive }}" hint-placeholder-val="{{ true }}">
-              <button onClick="{{ p.pick }}" style="flex: 1 1 auto; border: none; cursor: pointer; border-radius: 6px; padding: 6px 12px; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ffffff; color: #4d4d4d; box-shadow: 0 0 0 1px #ebebeb;" style-hover="background: rgba(0,0,0,.05); color: #171717;">{{ p.label }}</button>
+              <button onClick="{{ p.pick }}" style="flex: 1 1 auto; border: none; cursor: pointer; border-radius: 6px; padding: 6px 8px; min-width: 0; white-space: nowrap; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ffffff; color: #4d4d4d; box-shadow: 0 0 0 1px #ebebeb;" style-hover="background: rgba(0,0,0,.05); color: #171717;">{{ p.label }}</button>
             </sc-if>
           </sc-for>
         </div>
@@ -103,7 +103,7 @@
         <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
           <sc-for list="{{ cards }}" as="card" hint-placeholder-count="0">
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px; max-width: 100%;">
-              <div style="height: 240px; width: auto; align-self: flex-start; max-width: 100%; aspect-ratio: {{ card.ar }}; border-radius: 6px; overflow: hidden; background: #ebebeb;">
+              <div style="height: {{ card.ph }}px; width: auto; align-self: flex-start; max-width: 100%; aspect-ratio: {{ card.ar }}; border-radius: 6px; overflow: hidden; background: #ebebeb;">
                 <sc-if value="{{ card.hasUrl }}" hint-placeholder-val="{{ false }}">
                   <img src="{{ card.url }}" alt="{{ card.label }}" style="height: 100%; width: auto; display: block;">
                 </sc-if>
@@ -131,8 +131,9 @@ class Component extends DCLogic {
   static card(back, main, pays) {
     return [
       { src: back, x: 0, y: 0, w: 600, h: 900 },
-      pays ? { src: 'assets/apple-google.svg', x: 34, y: 36, w: 532, h: 52 } : { src: 'assets/evix-logo-4f4de8ce.svg', x: 225, y: 48, w: 150, h: 28 },
+      pays ? { src: 'assets/pay-apple-google.svg', x: 268.2, y: 36, w: 297.8, h: 50.84 } : { src: 'assets/evix-logo-4f4de8ce.svg', x: 225, y: 48, w: 150, h: 28 },
       ...main,
+      ...(pays ? [{ src: 'assets/pay-evixcard.svg', x: 34, y: 47.7, w: 148.74, h: 27.44 }] : []),
       { src: 'assets/pattern-bab1d92f.svg', x: 0, y: 722, w: 600, h: 178 },
     ];
   }
@@ -142,25 +143,27 @@ class Component extends DCLogic {
     Mastercard: { back: 'assets/back-mastercard.png', logo: 'assets/mastercard-logo.svg', ar: 264 / 50, lw: 0.88, pays: true },
     Evix: { back: 'assets/back-evix.png', logo: 'assets/evixcard-logo.svg', ar: 211 / 36, lw: 0.70, pays: false },
   };
-  static SIZES = { G2A: [[323, 433], [640, 360]], Kinguin: [[300, 300]], Driffle: [[400, 560]], K2G: [[400, 533]] };
+  static SIZES = { G2A: [[323, 433], [640, 360]], Kinguin: [[300, 300], [173, 120], [800, 700], [600, 800], [1920, 1080]], Driffle: [[400, 560]], K2G: [[400, 533]] };
   static fit(w, h, ar, maxH) { if (h > maxH) { h = maxH; w = h * ar; } return [w, h]; }
   static layout(b, W, H) {
     const B = Component.BRAND[b], land = W > H, L = [{ src: B.back, cover: true }];
-    const topY = 0.069 * H;
-    if (B.pays) { const [w, h] = Component.fit(0.887 * W, 0.887 * W / (266 / 26), 266 / 26, 0.07 * H); L.push({ src: 'assets/apple-google.svg', x: (W - w) / 2, y: topY - h / 2, w, h }); }
-    else { const [w, h] = Component.fit(0.25 * W, 0.25 * W * 28 / 150, 150 / 28, 0.045 * H); L.push({ src: 'assets/evix-logo-4f4de8ce.svg', x: (W - w) / 2, y: topY - h / 2, w, h }); }
-    let lw = B.lw * W * (land ? 0.75 : 1);
-    const [w, h] = Component.fit(lw, lw / B.ar, B.ar, 0.22 * H);
+    const sm = H < 200, topY = sm ? Math.max(0.069 * H, 15) : 0.069 * H;
+    let payEvix = null;
+    if (B.pays) { const [w, h] = Component.fit(0.887 * W, 0.887 * W / (266 / 26), 266 / 26, sm ? Math.max(0.07 * H, 14) : 0.07 * H); const k = w / 266, m = Math.min((W - w) / 2, 0.0565 * W), t = topY - h / 2; L.push({ src: 'assets/pay-apple-google.svg', x: W - m - 148.9 * k, y: t, w: 148.9 * k, h: 25.42 * k }); payEvix = { src: 'assets/pay-evixcard.svg', x: m, y: t + 5.85 * k, w: 74.37 * k, h: 13.72 * k }; }
+    else { const ew = sm ? Math.max(0.25 * W, 64) : 0.25 * W; const [w, h] = Component.fit(ew, ew * 28 / 150, 150 / 28, sm ? Math.max(0.045 * H, 12) : 0.045 * H); L.push({ src: 'assets/evix-logo-4f4de8ce.svg', x: (W - w) / 2, y: topY - h / 2, w, h }); }
+    let lw = B.lw * W * (land && !sm ? 0.75 : 1);
+    const [w, h] = Component.fit(lw, lw / B.ar, B.ar, sm ? 0.3 * H : 0.22 * H);
     const s = Math.min(W / 300, 0.2 * H / 89), pw = 300 * s, ph = 89 * s;
     const topBottom = L[1].y + L[1].h, mid = (topBottom + H - ph) / 2;
     const cy = (W / H <= 0.8 ? 0.34 * H : mid - 0.02 * H) + (b === 'Visa' && W / H <= 0.8 ? 0.04 * H : 0);
     L.push({ src: B.logo, x: (W - w) / 2, y: cy - h / 2, w, h });
+    if (payEvix) L.push(payEvix);
     const u = 84 * s, reps = land ? Math.max(1, Math.floor((W / 2 - 0.18 * W) / u)) : 1;
     for (let k = 0; k < reps; k++) {
       L.push({ src: 'assets/pattern-bab1d92f.svg', x: k * u, y: H - ph, w: pw, h: ph, clip: [k * u, H - ph, u, ph] });
       L.push({ src: 'assets/pattern-bab1d92f.svg', x: W - pw - k * u, y: H - ph, w: pw, h: ph, clip: [W - u - k * u, H - ph, u, ph] });
     }
-    return { w: W, h: H, layers: L, num: { cap: 0.25 * ph, baseline: H - 0.365 * ph, maxW: W - 2 * reps * u - 16 * s } };
+    return { w: W, h: H, layers: L, num: { cap: sm ? Math.max(0.25 * ph, Math.min(14, 0.12 * H)) : 0.25 * ph, baseline: H - 0.365 * ph, maxW: W - 2 * reps * u - 16 * s } };
   }
   static TEMPLATES = (() => {
     const T = {};
@@ -178,7 +181,8 @@ class Component extends DCLogic {
     Object.values(T).forEach(specs => specs.forEach(s => {
       const { w: W, h: H } = s, k = Math.min(W / 323, (W / H > 0.8 ? 0.3 : 0.4) * H / 165), pw = 323 * k, ph = 165 * k;
       const pat = [];
-      for (let x = 0; x < W; x += pw) pat.push({ src: 'assets/pattern-02.svg', x, y: H - ph, w: pw, h: ph });
+      const tw = Math.round(pw), th = Math.round(ph);
+      for (let x = 0; x < W; x += tw) pat.push({ src: 'assets/pattern-02.svg', x, y: H - th, w: tw, h: th });
       const layers = s.layers.filter(l => !l.src.includes('pattern')).map(l => ({ ...l }));
       const top = layers[1], logo = layers[2], gapBot = H - ph;
       if (logo && logo.y + logo.h > gapBot - 0.06 * H) logo.y = (top.y + top.h + gapBot) / 2 - logo.h / 2;
@@ -196,7 +200,7 @@ class Component extends DCLogic {
         const l = layers[i];
         if (l.cover) { const r = Math.max(W / im.naturalWidth, H / im.naturalHeight), w = im.naturalWidth * r, h = im.naturalHeight * r; ctx.drawImage(im, (W - w) / 2, (H - h) / 2, w, h); return; }
         ctx.save();
-        if (l.clip) { ctx.beginPath(); ctx.rect(...l.clip); ctx.clip(); }
+        if (l.clip) { const [cx, cy, cw, ch] = l.clip; const x0 = Math.round(cx), x1 = Math.round(cx + cw); ctx.beginPath(); ctx.rect(x0, Math.floor(cy), x1 - x0, Math.ceil(ch) + 1); ctx.clip(); }
         ctx.drawImage(im, l.x, l.y, l.w, l.h);
         ctx.restore();
       });
@@ -317,7 +321,12 @@ class Component extends DCLogic {
     });
     this.setState({ urls });
   }
-  fileName(v, s) { if (v == null) return `evixcard-${this.state.brand.toLowerCase()}-${this.state.platform.toLowerCase()}-${this.sk(s)}.png`; const c = this.opts().currency; return `evixcard-${this.state.brand.toLowerCase()}-${this.state.platform.toLowerCase()}-${this.sk(s)}-${v.replace('.', '_')}${c ? '-' + c.replace(/[^\w]/g, '') : ''}.png`; }
+  fileName(v, s) {
+    const c = this.opts().currency || '', cur = ({ '$': 'usd', '€': 'eur', '£': 'gbp' })[c] || c.replace(/[^\w]/g, '').toLowerCase();
+    const base = `evixcard-${this.state.brand.toLowerCase()}-${this.state.platform.toLowerCase()}-${this.sk(s)}`;
+    if (v == null) return `${base}.png`;
+    return `${base}-${v.replace('.', '_')}${cur ? '-' + cur : ''}.png`;
+  }
   async downloadZip() {
     const list = this.items();
     if (!list.length || !window.JSZip) return;
@@ -365,7 +374,7 @@ class Component extends DCLogic {
       onText: e => this.setField('text', e.target.value),
       noTpl: !Component.TEMPLATES[this.tk],
       noTplMsg: `No ${this.state.brand} × ${this.state.platform} template yet`,
-      cards: this.items().map(({ v, s, id }) => ({ label: v == null ? 'Base' : this.label(v), url: this.state.urls[id] || '', hasUrl: !!this.state.urls[id], file: this.fileName(v, s), ar: `${s.w} / ${s.h}`, size: (v == null ? 'Base' : '') + (v == null && this.specs.length > 1 ? ' · ' : '') + (this.specs.length > 1 ? `${s.w}×${s.h}` : ''), brk: (v == null && this.specs.length === 1) || (this.specs.length > 1 && (s === this.specs[this.specs.length - 1] || s === this.specs[this.specs.length - 1].base)) })),
+      cards: this.items().map(({ v, s, id }) => ({ ph: Math.min(240, s.h), label: v == null ? 'Base' : this.label(v), url: this.state.urls[id] || '', hasUrl: !!this.state.urls[id], file: this.fileName(v, s), ar: `${s.w} / ${s.h}`, size: (v == null ? 'Base' : '') + (v == null && this.specs.length > 1 ? ' · ' : '') + (this.specs.length > 1 ? `${s.w}×${s.h}` : ''), brk: (v == null && this.specs.length === 1) || (this.specs.length > 1 && (s === this.specs[this.specs.length - 1] || s === this.specs[this.specs.length - 1].base)) })),
       countLabel: `${n} ${plural}`,
       hasInvalid: invalid.length > 0,
       hasDups: this.parse().dups.length > 0,
