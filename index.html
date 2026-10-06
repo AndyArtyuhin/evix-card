@@ -134,7 +134,7 @@ class Component extends DCLogic {
       pays ? { src: 'assets/pay-apple-google.svg', x: 268.2, y: 36, w: 297.8, h: 50.84 } : { src: 'assets/evix-logo-4f4de8ce.svg', x: 225, y: 48, w: 150, h: 28 },
       ...main,
       ...(pays ? [{ src: 'assets/pay-evixcard.svg', x: 34, y: 47.7, w: 148.74, h: 27.44 }] : []),
-      { src: 'assets/pattern-bab1d92f.svg', x: 0, y: 722, w: 600, h: 178 },
+      { src: 'assets/pattern-eneba-v2.svg', x: 0, y: 600, w: 600, h: 300 },
     ];
   }
   static BRAND = {
@@ -168,7 +168,7 @@ class Component extends DCLogic {
   static TEMPLATES = (() => {
     const T = {};
     Object.keys(Component.BRAND).forEach(b => Object.entries(Component.SIZES).forEach(([p, sizes]) => { T[b + '/' + p] = sizes.map(([w, h]) => Component.layout(b, w, h)); }));
-    const E = { w: 600, h: 900, num: { cap: 45, baseline: 835, maxW: 250 } };
+    const E = { w: 600, h: 900, num: { cap: 49, baseline: 724, maxW: 190 } };
     const eneba = {
     'PayPal/Eneba': Component.card('assets/back-paypal.png', [{ src: 'assets/paypal-logo-ccc41eda.svg', x: 70, y: 222, w: 460, h: 146 }]),
     'Visa/Eneba': Component.card('assets/back-visa.png', [{ src: 'assets/visa-logo.svg', x: 127, y: 220, w: 346, h: 150 }], true),
