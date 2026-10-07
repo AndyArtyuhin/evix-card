@@ -104,6 +104,9 @@
           <sc-for list="{{ cards }}" as="card" hint-placeholder-count="0">
             <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px; max-width: 100%;">
               <div style="height: {{ card.ph }}px; width: auto; align-self: flex-start; max-width: 100%; aspect-ratio: {{ card.ar }}; border-radius: 6px; overflow: hidden; background: #ebebeb;">
+                <sc-if value="{{ card.loading }}" hint-placeholder-val="{{ false }}">
+                  <div style="height: 100%; display: flex; align-items: center; justify-content: center; font-family: 'Geist Mono', monospace; font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: #666666;">Rendering…</div>
+                </sc-if>
                 <sc-if value="{{ card.hasUrl }}" hint-placeholder-val="{{ false }}">
                   <img src="{{ card.url }}" alt="{{ card.label }}" style="height: 100%; width: auto; display: block;">
                 </sc-if>
@@ -126,7 +129,7 @@
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
   static PREFIX = ['$', '€', '£', '¥', '₹', '₩', '₱', '₪', 'US$', 'A$', 'C$'];
-  static PLATFORMS = ['Eneba', 'G2A', 'Kinguin', 'Driffle', 'K2G'];
+  static PLATFORMS = ['Eneba', 'G2A', 'Kinguin', 'Driffle', 'K2G', 'K4G'];
   static BRANDS = ['PayPal', 'Visa', 'Mastercard', 'Evix'];
   static card(back, main, pays) {
     return [
@@ -143,7 +146,7 @@ class Component extends DCLogic {
     Mastercard: { back: 'assets/back-mastercard.png', logo: 'assets/mastercard-logo.svg', ar: 264 / 50, lw: 0.88, pays: true },
     Evix: { back: 'assets/back-evix.png', logo: 'assets/evixcard-logo.svg', ar: 211 / 36, lw: 0.70, pays: false },
   };
-  static SIZES = { G2A: [[323, 433], [640, 360]], Kinguin: [[270, 360, 'Main']], /* hidden: [300, 300], [173, 120], [800, 700], [600, 800], [1920, 1080] */ Driffle: [[400, 560]], K2G: [[400, 533]] };
+  static SIZES = { G2A: [[323, 433], [640, 360]], Kinguin: [[300, 300], [173, 120], [800, 700], [600, 800], [1920, 1080]], Driffle: [[400, 560]], K2G: [[400, 533]], K4G: [[270, 360]] };
   static fit(w, h, ar, maxH) { if (h > maxH) { h = maxH; w = h * ar; } return [w, h]; }
   static layout(b, W, H) {
     const B = Component.BRAND[b], land = W > H, L = [{ src: B.back, cover: true }];
@@ -167,7 +170,7 @@ class Component extends DCLogic {
   }
   static TEMPLATES = (() => {
     const T = {};
-    Object.keys(Component.BRAND).forEach(b => Object.entries(Component.SIZES).forEach(([p, sizes]) => { T[b + '/' + p] = sizes.map(([w, h, name]) => ({ ...Component.layout(b, w, h), name })); }));
+    Object.keys(Component.BRAND).forEach(b => Object.entries(Component.SIZES).forEach(([p, sizes]) => { T[b + '/' + p] = sizes.map(([w, h, name, scale]) => { const L = Component.layout(b, w, h); if (p === 'Kinguin' && ['300x300', '800x700', '600x800'].includes(w + 'x' + h)) L.num = { ...L.num, cap: L.num.cap * 1.3 }; return { ...L, name, scale }; }); }));
     const E = { w: 600, h: 900, num: { cap: 49, baseline: 724, maxW: 190 } };
     const eneba = {
     'PayPal/Eneba': Component.card('assets/back-paypal.png', [{ src: 'assets/paypal-logo-ccc41eda.svg', x: 70, y: 222, w: 460, h: 146 }]),
@@ -186,15 +189,15 @@ class Component extends DCLogic {
       const layers = s.layers.filter(l => !l.src.includes('pattern')).map(l => ({ ...l }));
       const top = layers[1], logo = layers[2], gapBot = H - ph;
       if (logo && logo.y + logo.h > gapBot - 0.06 * H) logo.y = (top.y + top.h + gapBot) / 2 - logo.h / 2;
-      s.base = { w: W, h: H, name: s.name, isBase: true, layers: [...layers, ...pat] };
+      s.base = { w: W, h: H, name: s.name, scale: s.scale, isBase: true, layers: [...layers, ...pat] };
     }));
     return T;
   })();
   compose(spec) {
     const { layers, w: W, h: H } = spec;
     return Promise.all(layers.map(l => this.loadImg(l.src))).then(ims => {
-      const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
-      const ctx = cv.getContext('2d');
+      const sc = spec.scale || 1, cv = document.createElement('canvas'); cv.width = W * sc; cv.height = H * sc;
+      const ctx = cv.getContext('2d'); ctx.scale(sc, sc);
       ims.forEach((im, i) => {
         if (!im) return;
         const l = layers[i];
@@ -294,8 +297,8 @@ class Component extends DCLogic {
   draw(v, s) {
     const o = this.opts(), n = s.num;
     const cv = document.createElement('canvas');
-    cv.width = s.w; cv.height = s.h;
-    const ctx = cv.getContext('2d');
+    const sc = s.scale || 1; cv.width = s.w * sc; cv.height = s.h * sc;
+    const ctx = cv.getContext('2d'); ctx.scale(sc, sc);
     const bg = this.imgs[this.tk + '|' + this.sk(s)];
     if (bg) ctx.drawImage(bg, 0, 0, s.w, s.h);
     if (v == null) return cv.toDataURL('image/png');
@@ -374,7 +377,7 @@ class Component extends DCLogic {
       onText: e => this.setField('text', e.target.value),
       noTpl: !Component.TEMPLATES[this.tk],
       noTplMsg: `No ${this.state.brand} × ${this.state.platform} template yet`,
-      cards: this.items().map(({ v, s, id }) => ({ ph: Math.min(240, s.h), label: v == null ? 'Base' : this.label(v), url: this.state.urls[id] || '', hasUrl: !!this.state.urls[id], file: this.fileName(v, s), ar: `${s.w} / ${s.h}`, size: [v == null ? 'Base' : '', s.name || '', (this.specs.length > 1 || s.name) ? `${s.w}×${s.h}` : ''].filter(Boolean).join(' · '), brk: (v == null && this.specs.length === 1) || (this.specs.length > 1 && (s === this.specs[this.specs.length - 1] || s === this.specs[this.specs.length - 1].base)) })),
+      cards: this.items().map(({ v, s, id }) => ({ ph: s.scale ? s.h : Math.min(240, s.h), label: v == null ? 'Base' : this.label(v), url: this.state.urls[id] || '', hasUrl: !!this.state.urls[id], loading: !this.state.urls[id], file: this.fileName(v, s), ar: `${s.w} / ${s.h}`, size: [v == null ? 'Base' : '', s.name || '', `${s.w}×${s.h}`].filter(Boolean).join(' · '), brk: (v == null && this.specs.length === 1) || (this.specs.length > 1 && (s === this.specs[this.specs.length - 1] || s === this.specs[this.specs.length - 1].base)) })),
       countLabel: `${n} ${plural}`,
       hasInvalid: invalid.length > 0,
       hasDups: this.parse().dups.length > 0,
