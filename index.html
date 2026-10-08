@@ -29,6 +29,28 @@
   </style>
 </helmet>
 <div style="min-height: 100vh; background: #fafafa; color: #171717; font-family: Geist, Inter, sans-serif; font-feature-settings: 'calt' 0, 'rlig', 'ss11';">
+<sc-if value="{{ guest }}" hint-placeholder-val="{{ true }}">
+  <div style="max-width: 1280px; margin: 0 auto; padding: 24px 32px; min-height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px;">
+    <header style="display: flex; align-items: center; justify-content: center; gap: 16px;">
+      <img src="assets/logo-symbol.svg" alt="evixcard" style="display: block; width: 36px; height: 36px;">
+      <button onClick="{{ openLogin }}" style="border: none; cursor: pointer; border-radius: 6px; height: 36px; padding: 0 16px; background: #171717; color: #ffffff; font-family: Geist, Inter, sans-serif; font-size: 14px; font-weight: 500;" style-hover="background: #383838;" style-active="transform: scale(0.98);">Log In</button>
+    </header>
+    <sc-if value="{{ loginOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="width: 100%; display: flex; justify-content: center;">
+        <form onSubmit="{{ submitLogin }}" style="width: 100%; max-width: 356px; display: flex; flex-direction: column; gap: 12px;">
+          <div style="font-size: 30px; letter-spacing: -1.5px; line-height: 1.1;">Log in</div>
+          <div style="font-size: 14px; line-height: 1.43; color: #666666;">Use your corporate email @evixcash.com</div>
+          <input type="email" value="{{ email }}" onChange="{{ setEmail }}" placeholder="name@evixcash.com" style="height: 40px; padding: 0 12px; border: none; border-radius: 6px; background: #ffffff; box-shadow: 0 0 0 1px #ebebeb; font-family: Geist, Inter, sans-serif; font-size: 14px; color: #171717; outline: none;" style-focus="box-shadow: 0 0 0 1px #171717;">
+          <sc-if value="{{ hasEmailErr }}" hint-placeholder-val="{{ false }}">
+            <div style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #4d4d4d;">{{ emailErr }}</div>
+          </sc-if>
+          <button type="submit" style="border: none; cursor: pointer; border-radius: 6px; height: 40px; background: #171717; color: #ffffff; font-family: Geist, Inter, sans-serif; font-size: 14px; font-weight: 500;" style-hover="background: #383838;" style-active="transform: scale(0.98);">Continue</button>
+        </form>
+      </div>
+    </sc-if>
+  </div>
+</sc-if>
+<sc-if value="{{ authed }}" hint-placeholder-val="{{ false }}">
   <div style="max-width: 1280px; margin: 0 auto; padding: 24px 32px 64px; display: flex; flex-direction: column; gap: 24px;">
     <header style="display: grid; grid-template-columns: minmax(280px, 356px) minmax(0, 1fr); gap: 24px; align-items: center;">
       <div style="max-width: 380px; display: flex; align-items: center;">
@@ -124,6 +146,7 @@
       </div>
     </div>
   </div>
+</sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
@@ -213,6 +236,7 @@ class Component extends DCLogic {
   sk(spec) { return spec.w + 'x' + spec.h + (spec.isBase ? '-base' : ''); }
   get specs() { return Component.TEMPLATES[this.tk] || []; }
   static LS = 'evix-card-gen-v3';
+  get authEmail() { return 'google'; }
   state = (() => {
     let saved = {};
     try { saved = JSON.parse(localStorage.getItem(Component.LS)) || {}; } catch (e) {}
@@ -352,6 +376,11 @@ class Component extends DCLogic {
     const n = valid.length;
     const plural = n % 10 === 1 && n % 100 !== 11 ? 'карточка' : [2,3,4].includes(n % 10) && ![12,13,14].includes(n % 100) ? 'карточки' : 'карточек';
     return {
+      authed: !!this.authEmail, guest: !this.authEmail, loginOpen: !!this.state.loginOpen,
+      openLogin: () => this.setState({ loginOpen: true }),
+      email: this.state.email || '', setEmail: e => this.setState({ email: e.target.value, emailErr: '' }),
+      hasEmailErr: !!this.state.emailErr, emailErr: this.state.emailErr,
+      submitLogin: e => { e.preventDefault(); const v = (this.state.email || '').trim().toLowerCase(); if (!/^[^\s@]+@evixcash\.com$/.test(v)) return this.setState({ emailErr: '✕ Only @evixcash.com emails are allowed' }); try { localStorage.setItem('evix-auth', v); } catch (x) {} this._ae = v; this.forceUpdate(); },
       text: this.state.text,
       currency: this.state.currency,
       onCurrency: e => this.setField('currency', e.target.value),
