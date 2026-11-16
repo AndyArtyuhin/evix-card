@@ -168,8 +168,8 @@ class Component extends DCLogic {
     Visa: { back: 'assets/back-visa-sat.png', logo: 'assets/visa-logo.svg', ar: 173 / 75, lw: 0.577, pays: true },
     Mastercard: { back: 'assets/back-mc-sat.png', logo: 'assets/mastercard-logo.svg', ar: 264 / 50, lw: 0.88, pays: true },
     Evix: { mesh: true, ink: '#0b0b10', logo: 'assets/evixcard-logo-black.svg', ar: 211 / 36, lw: 0.70, pays: false },
-    'Apple Pay': { back: 'assets/back-apple.png', logo: 'assets/applepay-logo.svg', ar: 62.05 / 25.42, lw: 0.62, pays: true, payRight: 'assets/pay-visa-mastercard.svg' },
-    'Google Pay': { back: 'assets/back-google.png', backLand: 'assets/back-google-land.png', logo: 'assets/googlepay-logo.svg', ar: 63.3 / 25.42, lw: 0.62, pays: true, payRight: 'assets/pay-visa-mastercard.svg' },
+    'Apple Pay': { back: 'assets/back-apple.png', logo: 'assets/applepay-logo.svg', sub: true, ar: 62.05 / 25.42, lw: 0.62, pays: true, payRight: 'assets/pay-visa-mastercard.svg' },
+    'Google Pay': { back: 'assets/back-google.png', backLand: 'assets/back-google-land.png', logo: 'assets/googlepay-logo.svg', sub: true, ar: 63.3 / 25.42, lw: 0.62, pays: true, payRight: 'assets/pay-visa-mastercard.svg' },
   };
   static NET = [{ t: 'Visa', color: '#ffffff' }, { t: '  |  ', color: 'rgba(255,255,255,0.6)' }, { t: 'Mastercard', color: '#ffffff' }];
   static HERO = {
@@ -199,6 +199,10 @@ class Component extends DCLogic {
       const aTop = topBottom, A = H - ph - aTop, Hc0 = HR.ys[HR.ys.length - 1] * W, k = Math.min(1, 0.9 * A / Hc0), U = W * k, top = aTop + (A - HR.ac * W * k) / 2 + 0.01 * A - (W === 270 && H === 360 ? 0.035 * H : 0), hw = 0.5 * U, Ln = HR.two && W / H >= 0.9 ? HR.two : HR, cf = Ln.cf || 0.083, cap = cf * U, lf = cf / 0.083;
       L.push({ src: HR.img, x: (W - hw) / 2, y: top, w: hw, h: hw * HR.ar, grp: 1, ah: HR.ac * U });
       Ln.lines.forEach((runs, i) => L.push({ runs, cap, x: W / 2, y: top + (Ln.ys[0] + (Ln.ys[i] - Ln.ys[0]) * lf) * U - cap, w: 0, h: cap, grp: 1 }));
+    } else if (B.sub) {
+      const g = 0.2 * h, c = 0.14 * h, cy2 = cy - (g + c) / 2;
+      L.push({ src: B.logo, x: (W - w) / 2, y: cy2 - h / 2, w, h, grp: 1 });
+      L.push({ runs: [{ t: 'VIRTUAL CARD', color: '#ffffff' }], weight: 500, cap: c, x: W / 2, y: cy2 + h / 2 + g, w: 0, h: c, grp: 1 });
     } else L.push({ src: B.logo, x: (W - w) / 2, y: cy - h / 2, w, h });
     if (payEvix) L.push(payEvix);
     const u = 84 * s, reps = land ? Math.max(1, Math.floor((W / 2 - 0.18 * W) / u)) : 1;
@@ -226,8 +230,8 @@ class Component extends DCLogic {
       { runs: [{ t: 'Gift Card', color: '#ffffff' }], cap: 50, x: 300, y: 533, w: 0, h: 50, grp: 1 },
     ], true),
     'Evix/Eneba': [{ mesh: true }, { text: 'Gift Card', color: '#0b0b10', cap: 26, x: 300, y: 49, w: 0, h: 26 }, { src: 'assets/evixcard-logo-black.svg', x: 89, y: 259, w: 422, h: 72 }, { src: 'assets/pattern-eneba-dark.svg', x: 0, y: 600, w: 600, h: 300 }],
-    'Apple Pay/Eneba': Component.card('assets/back-apple.png', [{ src: 'assets/applepay-logo.svg', x: 100, y: 213, w: 400, h: 164 }], true, 'assets/pay-visa-mastercard.svg'),
-    'Google Pay/Eneba': Component.card('assets/back-google.png', [{ src: 'assets/googlepay-logo.svg', x: 100, y: 215, w: 400, h: 160.6 }], true, 'assets/pay-visa-mastercard.svg'),
+    'Apple Pay/Eneba': Component.card('assets/back-apple.png', [{ src: 'assets/applepay-logo.svg', x: 100, y: 185, w: 400, h: 164, grp: 1 }, { runs: [{ t: 'VIRTUAL CARD', color: '#ffffff' }], weight: 500, cap: 23, x: 300, y: 382, w: 0, h: 23, grp: 1 }], true, 'assets/pay-visa-mastercard.svg'),
+    'Google Pay/Eneba': Component.card('assets/back-google.png', [{ src: 'assets/googlepay-logo.svg', x: 100, y: 187, w: 400, h: 160.6, grp: 1 }, { runs: [{ t: 'VIRTUAL CARD', color: '#ffffff' }], weight: 500, cap: 22.5, x: 300, y: 380, w: 0, h: 22.5, grp: 1 }], true, 'assets/pay-visa-mastercard.svg'),
     };
     Object.entries(eneba).forEach(([k, layers]) => { T[k] = [{ ...E, layers, ...(k === 'Evix/Eneba' ? { ink: '#0b0b10' } : {}) }]; });
     Object.values(T).forEach(specs => specs.forEach(s => {
