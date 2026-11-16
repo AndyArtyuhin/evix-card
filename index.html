@@ -77,7 +77,7 @@
     <div style="display: grid; grid-template-columns: minmax(280px, 356px) minmax(0, 1fr); gap: 24px; align-items: start;">
       <div style="flex: 1 1 300px; max-width: 356px; display: flex; flex-direction: column; gap: 16px; background: #ffffff; border-radius: 6px; padding: 24px; box-shadow: 0 0 0 1px rgba(0,0,0,.08), 0 0 0 2px #fafafa;">
         <label style="font-family: 'Geist Mono', monospace; font-size: 14px; letter-spacing: 0.05em; text-transform: uppercase; color: #4d4d4d;">Brand</label>
-        <div style="display: flex; flex-wrap: nowrap; gap: 8px;">
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
           <sc-for list="{{ brands }}" as="p" hint-placeholder-count="4">
             <sc-if value="{{ p.active }}" hint-placeholder-val="{{ false }}">
               <button onClick="{{ p.pick }}" style="flex: 1 1 auto; border: none; cursor: pointer; border-radius: 6px; padding: 6px 8px; min-width: 0; white-space: nowrap; font-family: 'Geist Mono', monospace; font-size: 13px; background: #ebebeb; color: #171717;">{{ p.name }}</button>
@@ -153,11 +153,11 @@
 class Component extends DCLogic {
   static PREFIX = ['$', '€', '£', '¥', '₹', '₩', '₱', '₪', 'US$', 'A$', 'C$'];
   static PLATFORMS = ['Eneba', 'G2A', 'Kinguin', 'Driffle', 'K2G', 'K4G'];
-  static BRANDS = ['PayPal', 'Visa', 'Mastercard', 'Evix'];
-  static card(back, main, pays) {
+  static BRANDS = ['PayPal', 'Visa', 'Mastercard', 'Evix', 'Apple Pay', 'Google Pay'];
+  static card(back, main, pays, payRight) {
     return [
       { src: back, x: 0, y: 0, w: 600, h: 900 },
-      pays ? { src: 'assets/pay-apple-google.svg', x: 268.2, y: 36, w: 297.8, h: 50.84 } : { src: 'assets/evix-logo-4f4de8ce.svg', x: 225, y: 48, w: 150, h: 28 },
+      pays ? { src: payRight || 'assets/pay-apple-google.svg', x: 268.2, y: 36, w: 297.8, h: 50.84 } : { src: 'assets/evix-logo-4f4de8ce.svg', x: 225, y: 48, w: 150, h: 28 },
       ...main,
       ...(pays ? [{ src: 'assets/pay-evixcard.svg', x: 34, y: 47.7, w: 148.74, h: 27.44 }] : []),
       { src: 'assets/pattern-eneba-v2.svg', x: 0, y: 600, w: 600, h: 300 },
@@ -165,31 +165,47 @@ class Component extends DCLogic {
   }
   static BRAND = {
     PayPal: { back: 'assets/back-paypal.png', logo: 'assets/paypal-logo-ccc41eda.svg', ar: 230 / 73, lw: 0.767, pays: false },
-    Visa: { back: 'assets/back-visa.png', logo: 'assets/visa-logo.svg', ar: 173 / 75, lw: 0.577, pays: true },
-    Mastercard: { back: 'assets/back-mastercard.png', logo: 'assets/mastercard-logo.svg', ar: 264 / 50, lw: 0.88, pays: true },
-    Evix: { back: 'assets/back-evix.png', logo: 'assets/evixcard-logo.svg', ar: 211 / 36, lw: 0.70, pays: false },
+    Visa: { back: 'assets/back-visa-sat.png', logo: 'assets/visa-logo.svg', ar: 173 / 75, lw: 0.577, pays: true },
+    Mastercard: { back: 'assets/back-mc-sat.png', logo: 'assets/mastercard-logo.svg', ar: 264 / 50, lw: 0.88, pays: true },
+    Evix: { mesh: true, ink: '#0b0b10', logo: 'assets/evixcard-logo-black.svg', ar: 211 / 36, lw: 0.70, pays: false },
+    'Apple Pay': { back: 'assets/back-apple.png', logo: 'assets/applepay-logo.svg', ar: 62.05 / 25.42, lw: 0.62, pays: true, payRight: 'assets/pay-visa-mastercard.svg' },
+    'Google Pay': { back: 'assets/back-google.png', backLand: 'assets/back-google-land.png', logo: 'assets/googlepay-logo.svg', ar: 63.3 / 25.42, lw: 0.62, pays: true, payRight: 'assets/pay-visa-mastercard.svg' },
+  };
+  static HERO = {
+    Visa: { img: 'assets/visa-card-hero.png', ar: 473 / 600, ac: 0.603, ys: [0.488, 0.603], lines: [[{ t: 'Virtual ', color: '#ffffff' }, { t: 'VISA', color: '#2fd0ff' }], [{ t: 'Gift Card', color: '#ffffff' }]], one: [{ t: 'Virtual ', color: '#ffffff' }, { t: 'VISA', color: '#2fd0ff' }, { t: ' Gift Card', color: '#ffffff' }] },
+    Mastercard: { img: 'assets/mc-card-hero.png', ar: 999 / 1267, ac: 0.603, cf: 0.073, two: { cf: 0.068, ys: [0.498, 0.618], lines: [[{ t: 'Virtual Mastercard', color: '#ffffff' }], [{ t: 'Gift Card', color: '#ffffff' }]] }, ys: [0.498, 0.618, 0.735], lines: [[{ t: 'Virtual', color: '#ffffff' }], [{ t: 'Mastercard', color: '#ffffff' }], [{ t: 'Gift Card', color: '#ffffff' }]], one: [{ t: 'Virtual Mastercard Gift Card', color: '#ffffff' }] }
   };
   static SIZES = { G2A: [[323, 433], [640, 360]], Kinguin: [[300, 300], [173, 120], [800, 700], [600, 800], [1920, 1080]], Driffle: [[400, 560]], K2G: [[400, 533]], K4G: [[270, 360]] };
   static fit(w, h, ar, maxH) { if (h > maxH) { h = maxH; w = h * ar; } return [w, h]; }
   static layout(b, W, H) {
-    const B = Component.BRAND[b], land = W > H, L = [{ src: B.back, cover: true }];
+    const B = Component.BRAND[b], land = W > H, L = [B.mesh ? { mesh: true } : { src: land && B.backLand ? B.backLand : B.back, cover: true }];
     const sm = H < 200, topY = sm ? Math.max(0.069 * H, 15) : 0.069 * H;
     let payEvix = null;
-    if (B.pays) { const [w, h] = Component.fit(0.887 * W, 0.887 * W / (266 / 26), 266 / 26, sm ? Math.max(0.07 * H, 14) : 0.07 * H); const k = w / 266, m = Math.min((W - w) / 2, 0.0565 * W), t = topY - h / 2; L.push({ src: 'assets/pay-apple-google.svg', x: W - m - 148.9 * k, y: t, w: 148.9 * k, h: 25.42 * k }); payEvix = { src: 'assets/pay-evixcard.svg', x: m, y: t + 5.85 * k, w: 74.37 * k, h: 13.72 * k }; }
+    if (B.pays) { const [w, h] = Component.fit(0.887 * W, 0.887 * W / (266 / 26), 266 / 26, sm ? Math.max(0.07 * H, 14) : 0.07 * H); const k = w / 266, m = Math.min((W - w) / 2, 0.0565 * W), t = topY - h / 2; L.push({ src: B.payRight || 'assets/pay-apple-google.svg', x: W - m - 148.9 * k, y: t, w: 148.9 * k, h: 25.42 * k }); payEvix = { src: 'assets/pay-evixcard.svg', x: m, y: t + 5.85 * k, w: 74.37 * k, h: 13.72 * k }; }
+    else if (B.mesh) { const cap = sm ? Math.max(9, 0.05 * H) : Math.min(0.042 * W, 0.05 * H); L.push({ text: 'Gift Card', color: B.ink, cap, x: W / 2, y: topY - cap / 2, w: 0, h: cap }); }
     else { const ew = sm ? Math.max(0.25 * W, 64) : 0.25 * W; const [w, h] = Component.fit(ew, ew * 28 / 150, 150 / 28, sm ? Math.max(0.045 * H, 12) : 0.045 * H); L.push({ src: 'assets/evix-logo-4f4de8ce.svg', x: (W - w) / 2, y: topY - h / 2, w, h }); }
     let lw = B.lw * W * (land && !sm ? 0.75 : 1);
     const [w, h] = Component.fit(lw, lw / B.ar, B.ar, sm ? 0.3 * H : 0.22 * H);
     const s = Math.min(W / 300, 0.2 * H / 89), pw = 300 * s, ph = 89 * s;
     const topBottom = L[1].y + L[1].h, mid = (topBottom + H - ph) / 2;
     const cy = (W / H <= 0.8 ? 0.34 * H : mid - 0.02 * H) + (b === 'Visa' && W / H <= 0.8 ? 0.04 * H : 0);
-    L.push({ src: B.logo, x: (W - w) / 2, y: cy - h / 2, w, h });
+    const HR = Component.HERO[b];
+    if (HR && W / H > 1.4) {
+      const nch = HR.one.reduce((n, r) => n + r.t.length, 0), tot = 6 * HR.ar + 1.13, aTop = topBottom, A = H - ph - aTop, cap = Math.min(0.78 * A / tot, 0.9 * W / (0.75 * nch)), top = aTop + (A - tot * cap) * 0.45, hw = 6 * cap;
+      L.push({ src: HR.img, x: (W - hw) / 2, y: top, w: hw, h: hw * HR.ar, grp: 1 });
+      L.push({ runs: HR.one, cap, x: W / 2, y: top + hw * HR.ar + 0.13 * cap, w: 0, h: cap, grp: 1 });
+    } else if (HR) {
+      const aTop = topBottom, A = H - ph - aTop, Hc0 = HR.ys[HR.ys.length - 1] * W, k = Math.min(1, 0.9 * A / Hc0), U = W * k, top = aTop + (A - HR.ac * W * k) / 2 + 0.01 * A, hw = 0.5 * U, Ln = HR.two && W / H >= 0.9 ? HR.two : HR, cf = Ln.cf || 0.083, cap = cf * U, lf = cf / 0.083;
+      L.push({ src: HR.img, x: (W - hw) / 2, y: top, w: hw, h: hw * HR.ar, grp: 1, ah: HR.ac * U });
+      Ln.lines.forEach((runs, i) => L.push({ runs, cap, x: W / 2, y: top + (Ln.ys[0] + (Ln.ys[i] - Ln.ys[0]) * lf) * U - cap, w: 0, h: cap, grp: 1 }));
+    } else L.push({ src: B.logo, x: (W - w) / 2, y: cy - h / 2, w, h });
     if (payEvix) L.push(payEvix);
     const u = 84 * s, reps = land ? Math.max(1, Math.floor((W / 2 - 0.18 * W) / u)) : 1;
     for (let k = 0; k < reps; k++) {
-      L.push({ src: 'assets/pattern-bab1d92f.svg', x: k * u, y: H - ph, w: pw, h: ph, clip: [k * u, H - ph, u, ph] });
-      L.push({ src: 'assets/pattern-bab1d92f.svg', x: W - pw - k * u, y: H - ph, w: pw, h: ph, clip: [W - u - k * u, H - ph, u, ph] });
+      L.push({ src: B.mesh ? 'assets/pattern-bab-dark.svg' : 'assets/pattern-bab1d92f.svg', ...(B.mesh ? { alpha: 0.67 } : {}), x: k * u, y: H - ph, w: pw, h: ph, clip: [k * u, H - ph, u, ph] });
+      L.push({ src: B.mesh ? 'assets/pattern-bab-dark.svg' : 'assets/pattern-bab1d92f.svg', ...(B.mesh ? { alpha: 0.67 } : {}), x: W - pw - k * u, y: H - ph, w: pw, h: ph, clip: [W - u - k * u, H - ph, u, ph] });
     }
-    return { w: W, h: H, layers: L, num: { cap: sm ? Math.max(0.25 * ph, Math.min(14, 0.12 * H)) : 0.25 * ph, baseline: H - 0.365 * ph, maxW: W - 2 * reps * u - 16 * s } };
+    return { w: W, h: H, layers: L, ink: B.ink, num: { cap: sm ? Math.max(0.25 * ph, Math.min(14, 0.12 * H)) : 0.25 * ph, baseline: H - 0.365 * ph, maxW: W - 2 * reps * u - 16 * s } };
   }
   static TEMPLATES = (() => {
     const T = {};
@@ -197,41 +213,65 @@ class Component extends DCLogic {
     const E = { w: 600, h: 900, num: { cap: 49, baseline: 724, maxW: 190 } };
     const eneba = {
     'PayPal/Eneba': Component.card('assets/back-paypal.png', [{ src: 'assets/paypal-logo-ccc41eda.svg', x: 70, y: 222, w: 460, h: 146 }]),
-    'Visa/Eneba': Component.card('assets/back-visa.png', [{ src: 'assets/visa-logo.svg', x: 127, y: 220, w: 346, h: 150 }], true),
-    'Mastercard/Eneba': Component.card('assets/back-mastercard.png', [{ src: 'assets/mastercard-logo.svg', x: 36, y: 245, w: 528, h: 100 }], true),
-    'Evix/Eneba': Component.card('assets/back-evix.png', [
-      { src: 'assets/evixcard-logo.svg', x: 89, y: 259, w: 422, h: 72 },
-    ]),
+    'Visa/Eneba': Component.card('assets/back-visa-sat.png', [
+      { src: 'assets/visa-card-hero.png', x: 155, y: 168, w: 300, h: 236.5, grp: 1, ah: 362 },
+      { runs: [{ t: 'Virtual ', color: '#ffffff' }, { t: 'VISA', color: '#2fd0ff' }], cap: 50, x: 300, y: 411, w: 0, h: 50, grp: 1 },
+      { runs: [{ t: 'Gift Card', color: '#ffffff' }], cap: 50, x: 300, y: 480, w: 0, h: 50, grp: 1 },
+    ], true),
+    'Mastercard/Eneba': Component.card('assets/back-mc-sat.png', [
+      { src: 'assets/mc-card-hero.png', x: 155, y: 168, w: 300, h: 236.5, grp: 1, ah: 362 },
+      { runs: [{ t: 'Virtual', color: '#ffffff' }], cap: 50, x: 300, y: 417, w: 0, h: 50, grp: 1 },
+      { runs: [{ t: 'Mastercard', color: '#ffffff' }], cap: 50, x: 300, y: 489, w: 0, h: 50, grp: 1 },
+      { runs: [{ t: 'Gift Card', color: '#ffffff' }], cap: 50, x: 300, y: 559, w: 0, h: 50, grp: 1 },
+    ], true),
+    'Evix/Eneba': [{ mesh: true }, { text: 'Gift Card', color: '#0b0b10', cap: 26, x: 300, y: 49, w: 0, h: 26 }, { src: 'assets/evixcard-logo-black.svg', x: 89, y: 259, w: 422, h: 72 }, { src: 'assets/pattern-eneba-dark.svg', x: 0, y: 600, w: 600, h: 300 }],
+    'Apple Pay/Eneba': Component.card('assets/back-apple.png', [{ src: 'assets/applepay-logo.svg', x: 100, y: 213, w: 400, h: 164 }], true, 'assets/pay-visa-mastercard.svg'),
+    'Google Pay/Eneba': Component.card('assets/back-google.png', [{ src: 'assets/googlepay-logo.svg', x: 100, y: 215, w: 400, h: 160.6 }], true, 'assets/pay-visa-mastercard.svg'),
     };
-    Object.entries(eneba).forEach(([k, layers]) => { T[k] = [{ ...E, layers }]; });
+    Object.entries(eneba).forEach(([k, layers]) => { T[k] = [{ ...E, layers, ...(k === 'Evix/Eneba' ? { ink: '#0b0b10' } : {}) }]; });
     Object.values(T).forEach(specs => specs.forEach(s => {
       const { w: W, h: H } = s, k = Math.min(W / 323, (W / H > 0.8 ? 0.3 : 0.4) * H / 165), pw = 323 * k, ph = 165 * k;
       const pat = [];
       const tw = Math.round(pw), th = Math.round(ph);
-      for (let x = 0; x < W; x += tw) pat.push({ src: 'assets/pattern-02.svg', x, y: H - th, w: tw, h: th });
-      const layers = s.layers.filter(l => !l.src.includes('pattern')).map(l => ({ ...l }));
+      for (let x = 0; x < W; x += tw) pat.push({ src: s.ink ? 'assets/pattern-solid-black.svg' : 'assets/pattern-02.svg', ...(s.ink ? { alpha: 0.2 } : {}), x, y: H - th, w: tw, h: th });
+      const layers = s.layers.filter(l => !(l.src || '').includes('pattern')).map(l => ({ ...l }));
       const top = layers[1], logo = layers[2], gapBot = H - ph;
-      if (logo && logo.y + logo.h > gapBot - 0.06 * H) logo.y = (top.y + top.h + gapBot) / 2 - logo.h / 2;
+      const G = layers.filter(l => l.grp);
+      if (G.length) {
+        const t0 = Math.min(...G.map(l => l.y)), b0 = Math.max(...G.map(l => l.y + l.h)), ah = G[0].ah || (b0 - t0), aT = top.y + top.h + 0.03 * H, aB = gapBot - 0.03 * H, f = Math.min(1, (aB + 0.02 * H - aT) / (b0 - t0)), nt = aT + ((aB - aT) - ah * f) / 2;
+        G.forEach(l => { const ncx = W / 2 + (l.x + l.w / 2 - W / 2) * f; l.w *= f; l.h *= f; if (l.cap) l.cap *= f; l.x = ncx - l.w / 2; l.y = nt + (l.y - t0) * f; });
+      } else if (logo && logo.y + logo.h > gapBot - 0.06 * H) logo.y = (top.y + top.h + gapBot) / 2 - logo.h / 2;
       s.base = { w: W, h: H, name: s.name, scale: s.scale, isBase: true, layers: [...layers, ...pat] };
     }));
     return T;
   })();
   compose(spec) {
     const { layers, w: W, h: H } = spec;
-    return Promise.all(layers.map(l => this.loadImg(l.src))).then(ims => {
+    return Promise.all(layers.map(l => l.src ? this.loadImg(l.src) : Promise.resolve(null))).then(ims => {
       const sc = spec.scale || 1, cv = document.createElement('canvas'); cv.width = W * sc; cv.height = H * sc;
       const ctx = cv.getContext('2d'); ctx.scale(sc, sc);
       ims.forEach((im, i) => {
-        if (!im) return;
         const l = layers[i];
+        if (l.mesh) { this.mesh(ctx, W, H); return; }
+        if (l.runs) { ctx.font = `700 ${l.cap / (this.capRatio || 0.7)}px RooftopCard`; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; const ws = l.runs.map(r => ctx.measureText(r.t).width); let cx = l.x - ws.reduce((a, b) => a + b, 0) / 2; l.runs.forEach((r, n) => { ctx.fillStyle = r.color; ctx.fillText(r.t, cx, l.y + l.h); cx += ws[n]; }); return; }
+        if (l.text) { ctx.font = `700 ${l.cap / (this.capRatio || 0.7)}px RooftopCard`; ctx.fillStyle = l.color; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.fillText(l.text, l.x, l.y + l.h); return; }
+        if (!im) return;
         if (l.cover) { const r = Math.max(W / im.naturalWidth, H / im.naturalHeight), w = im.naturalWidth * r, h = im.naturalHeight * r; ctx.drawImage(im, (W - w) / 2, (H - h) / 2, w, h); return; }
         ctx.save();
+        if (l.alpha) ctx.globalAlpha = l.alpha;
         if (l.clip) { const [cx, cy, cw, ch] = l.clip; const x0 = Math.round(cx), x1 = Math.round(cx + cw); ctx.beginPath(); ctx.rect(x0, Math.floor(cy), x1 - x0, Math.ceil(ch) + 1); ctx.clip(); }
         ctx.drawImage(im, l.x, l.y, l.w, l.h);
         ctx.restore();
       });
       return cv;
     });
+  }
+  mesh(ctx, W, H) {
+    ctx.fillStyle = '#f4f3f8'; ctx.fillRect(0, 0, W, H);
+    const blob = (x, y, rx, ry, c) => { ctx.save(); ctx.translate(x * W, y * H); ctx.scale(rx * W, ry * H); const g = ctx.createRadialGradient(0, 0, 0, 0, 0, 1); for (let i = 0; i <= 10; i++) { const t = i / 10; g.addColorStop(t, `rgba(${c},${Math.exp(-4.5 * t * t).toFixed(3)})`); } ctx.fillStyle = g; ctx.fillRect(-x / rx, -y / ry, 1 / rx, 1 / ry); ctx.restore(); };
+    blob(1, 0, 0.5, 0.32, '91,120,246');
+    blob(0, 0.72, 0.85, 0.5, '240,112,236');
+    blob(1, 1, 0.5, 0.3, '240,204,92');
   }
   sk(spec) { return spec.w + 'x' + spec.h + (spec.isBase ? '-base' : ''); }
   get specs() { return Component.TEMPLATES[this.tk] || []; }
@@ -284,15 +324,17 @@ class Component extends DCLogic {
 
   componentDidMount() {
     const tplLoads = [];
-    const imgReady = Promise.all(Object.entries(Component.TEMPLATES).flatMap(([k, specs]) => specs.flatMap(s => [s, s.base]).map(s => this.compose(s).then(im => { this.imgs[k + '|' + this.sk(s)] = im; }))));
+    const imgReady = () => Promise.all(Object.entries(Component.TEMPLATES).flatMap(([k, specs]) => specs.flatMap(s => [s, s.base]).map(s => this.compose(s).then(im => { this.imgs[k + '|' + this.sk(s)] = im; }))));
     Promise.all(tplLoads).catch(() => {});
     const files = { 400: 'Regular', 500: 'Medium', 700: 'Bold' };
     const fonts = Object.entries(files).map(([w, n]) =>
       new FontFace('RooftopCard', `url(assets/Rooftop-${n}.otf)`, { weight: w }).load().then(f => document.fonts.add(f)).catch(() => {}));
-    Promise.all([imgReady, ...fonts]).then(() => {
+    Promise.all(fonts).then(() => {
       const c = document.createElement('canvas').getContext('2d');
       c.font = '700 100px RooftopCard';
       this.capRatio = c.measureText('H').actualBoundingBoxAscent / 100 || 0.7;
+      return imgReady();
+    }).then(() => {
       this.cache = {}; this.ready = true; this.renderAll();
     });
   }
@@ -331,7 +373,7 @@ class Component extends DCLogic {
     ctx.font = `${o.weight} ${size}px RooftopCard`;
     const w = ctx.measureText(text).width;
     if (w > n.maxW) { size = size * n.maxW / w; ctx.font = `${o.weight} ${size}px RooftopCard`; }
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = s.ink || '#ffffff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'alphabetic';
     ctx.fillText(text, s.w / 2, n.baseline);
@@ -350,7 +392,7 @@ class Component extends DCLogic {
   }
   fileName(v, s) {
     const c = this.opts().currency || '', cur = ({ '$': 'usd', '€': 'eur', '£': 'gbp' })[c] || c.replace(/[^\w]/g, '').toLowerCase();
-    const base = `evixcard-${this.state.brand.toLowerCase()}-${this.state.platform.toLowerCase()}-${this.sk(s)}`;
+    const base = `evixcard-${this.state.brand.toLowerCase().replace(/\s+/g, '-')}-${this.state.platform.toLowerCase()}-${this.sk(s)}`;
     if (v == null) return `${base}.png`;
     return `${base}-${v.replace('.', '_')}${cur ? '-' + cur : ''}.png`;
   }
@@ -366,7 +408,7 @@ class Component extends DCLogic {
     const blob = await zip.generateAsync({ type: 'blob' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `evixcard-${this.state.brand.toLowerCase()}-${this.state.platform.toLowerCase()}-cards.zip`;
+    a.download = `evixcard-${this.state.brand.toLowerCase().replace(/\s+/g, '-')}-${this.state.platform.toLowerCase()}-cards.zip`;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 2000);
     this.setState({ busy: false, doneMsg: `Downloaded ${list.length} cards` });
