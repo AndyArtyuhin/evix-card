@@ -179,6 +179,7 @@ class Component extends DCLogic {
   static SIZES = { G2A: [[323, 433], [640, 360]], Kinguin: [[300, 300], [173, 120], [800, 700], [600, 800], [1920, 1080]], Driffle: [[400, 560]], K2G: [[400, 533]], K4G: [[270, 360]] };
   static fit(w, h, ar, maxH) { if (h > maxH) { h = maxH; w = h * ar; } return [w, h]; }
   static layout(b, W, H) {
+    if (Component.PAYCFG[b]) return Component.pay(b, W, H);
     const B = Component.BRAND[b], land = W > H, L = [B.mesh ? { mesh: true } : { src: land && B.backLand ? B.backLand : B.back, cover: true }];
     const sm = H < 200, topY = sm ? Math.max(0.069 * H, 15) : 0.069 * H;
     let payEvix = null;
@@ -212,9 +213,38 @@ class Component extends DCLogic {
     }
     return { w: W, h: H, layers: L, ink: B.ink, num: { cap: sm ? Math.max(0.25 * ph, Math.min(14, 0.12 * H)) : 0.25 * ph, baseline: H - 0.365 * ph, maxW: W - 2 * reps * u - 16 * s } };
   }
+  static PA = 'M0 42.0586L0 26.8004C14.7782 26.8004 26.8004 14.7782 26.8004 0L42.0586 0C42.0586 23.1883 23.1881 42.0586 0 42.0586Z';
+  static PB = 'M0 15.2582L0 0C23.1881 0 42.0586 18.8705 42.0586 42.0589L26.8004 42.0589C26.8004 27.2804 14.7782 15.2582 0 15.2582Z';
+  static PAYCFG = {
+    'Apple Pay': { AR: 0.577, bg: { appleBg: true }, phone: 'assets/applepay-phone.png', alpha: 0.24, t1: 'Virtual Apple', one: 'Virtual Apple Pay Card', accent: '#2fd0ff' },
+    'Google Pay': { AR: 0.56, bg: { src: 'assets/back-google.png', cover: true }, bgLand: { src: 'assets/back-google-land.png', cover: true }, phone: 'assets/googlepay-phone.png', alpha: 0.28, t1: 'Virtual Google', one: 'Virtual Google Pay Card', accent: '#ffffff', note: true }
+  };
+  static pay(bn, W, H) { const n = Component.payB(bn, W, H, true), b = Component.payB(bn, W, H, false); return { ...n, baseLayers: b.baseLayers }; }
+  static payB(bn, W, H, nm) {
+    const C = Component.PAYCFG[bn], AR = C.AR, land = W / H > 0.8, sm = H < 200, L = [land && C.bgLand ? C.bgLand : C.bg];
+    const cap = Math.max(land ? Math.min(0.046 * W, 0.04 * H) : 0.046 * W, sm ? 9 : 0), top = land ? Math.min(0.064 * W, 0.06 * H) : 0.064 * W, tb = top + cap;
+    L.push({ runs: [{ t: 'evixcard', color: '#ffffff' }], weight: 700, cap, x: 0.0467 * W, y: top, w: 0, h: cap, align: 'left' });
+    L.push({ runs: [{ t: 'Visa | Mastercard', color: '#ffffff' }], weight: 700, cap, x: W - 0.05 * W, y: top, w: 0, h: cap, align: 'right', maxW: 0.52 * W });
+    let PH, py, px, tc, b1, tx;
+    const sq = land && W / H <= 1.2;
+    if (!land) { PH = 0.541 * H; py = 0.152 * H; px = (W - PH * AR) / 2; }
+    else if (sq) { tc = Math.min(0.075 * W, 0.07 * H); b1 = 0.89 * H - 1.5 * tc; py = tb + 0.03 * H; PH = b1 - tc - 0.06 * H - py; px = (W - PH * AR) / 2; tx = W / 2; }
+    else { tc = Math.min(0.8 * W / 15.5, 0.09 * H); b1 = 0.89 * H; py = tb + 0.03 * H; PH = b1 - tc - 0.06 * H - py; px = (W - PH * AR) / 2; tx = W / 2; }
+    if (nm) { const c0 = px + PH * AR / 2; if (land) { const t2 = tc * 0.88, bb = sq ? 0.91 * H - 1.5 * t2 : 0.9 * H; PH = bb - t2 - 0.14 * H - py; py += 0.055 * H; } else { PH *= 0.95; py += PH * 0.025; } px = c0 - PH * AR / 2; }
+    const pw = PH * AR, nN = land ? Math.max(4, Math.round(W / (0.5 * pw))) : 4, T = land ? W / nN : 0.245 * W, x0 = 0, r1 = py + (land ? 0.184 : 0.14) * PH, r2 = r1 + 1.1 * T, cx = land ? Array.from({ length: nN }, (_, i) => i * T) : [0, T, 2 * T, 3.08 * T], tp = (i, a, b) => (land ? (i < nN / 2 ? a : b) : (i ? b : a));
+    L.push({ tiles: [...cx.map((c, i) => ({ t: tp(i, 'A', 'Ap'), x: x0 + c, y: r1, s: T })), ...cx.map((c, i) => ({ t: tp(i, 'B', 'Bp'), x: x0 + c, y: r2, s: T }))], alpha: C.alpha });
+    L.push({ src: C.phone, x: px, y: py, w: pw, h: PH });
+    if (C.note) { const nc = 0.022 * PH; L.push({ runs: [{ t: 'Card ready', color: '#5f6368' }], weight: 500, cap: nc, x: px + 0.44 * pw, y: py + 0.70 * PH - nc / 2, w: 0, h: nc }); }
+    if (!land) { tc = Math.min(0.09 * W, 0.06 * H); b1 = 0.92 * H - 1.5 * tc; tx = W / 2; }
+    if (nm) { tc *= 0.88; b1 = (land && !sq ? 0.9 : sq ? 0.91 : 0.88) * H - (land && !sq ? 0 : 1.5 * tc); } else if (!land) b1 -= 0.03 * H;
+    const one = land && !sq, first = { runs: [{ t: C.t1, color: '#ffffff' }], weight: 700, cap: tc, x: tx, y: b1 - tc, w: 0, h: tc }, full = L.slice();
+    if (one) full.push({ runs: [{ t: C.one, color: '#ffffff' }], weight: 700, cap: tc, x: tx, y: b1 - tc, w: 0, h: tc, maxW: 0.92 * W });
+    else { L.push(first); full.push(first, { runs: [{ t: 'Pay Card', color: '#ffffff' }], weight: 700, cap: tc, x: tx, y: b1 + 1.5 * tc - tc, w: 0, h: tc }); }
+    return { w: W, h: H, layers: L, baseLayers: full, apple: true, num: { cap: tc, cx: tx, baseline: one ? b1 : b1 + 1.5 * tc, prefix: one ? C.one + ' ' : 'Pay Card ', color: C.accent, pill: C.pill, maxW: one ? 0.92 * W : 0.9 * W } };
+  }
   static TEMPLATES = (() => {
     const T = {};
-    Object.keys(Component.BRAND).forEach(b => Object.entries(Component.SIZES).forEach(([p, sizes]) => { T[b + '/' + p] = sizes.map(([w, h, name, scale]) => { const L = Component.layout(b, w, h); if (p === 'Kinguin' && ['300x300', '800x700', '600x800'].includes(w + 'x' + h)) L.num = { ...L.num, cap: L.num.cap * 1.3 }; return { ...L, name, scale }; }); }));
+    Object.keys(Component.BRAND).forEach(b => Object.entries(Component.SIZES).forEach(([p, sizes]) => { T[b + '/' + p] = sizes.map(([w, h, name, scale]) => { const L = Component.layout(b, w, h); if (!L.apple && p === 'Kinguin' && ['300x300', '800x700', '600x800'].includes(w + 'x' + h)) L.num = { ...L.num, cap: L.num.cap * 1.3 }; return { ...L, name, scale }; }); }));
     const E = { w: 600, h: 900, num: { cap: 49, baseline: 724, maxW: 190 } };
     const eneba = {
     'PayPal/Eneba': Component.card('assets/back-paypal.png', [{ src: 'assets/paypal-logo-ccc41eda.svg', x: 70, y: 222, w: 460, h: 146 }]),
@@ -234,8 +264,10 @@ class Component extends DCLogic {
     'Google Pay/Eneba': Component.card('assets/back-google.png', [{ src: 'assets/googlepay-logo.svg', x: 100, y: 187, w: 400, h: 160.6, grp: 1 }, { runs: [{ t: 'VIRTUAL CARD', color: '#ffffff' }], weight: 500, cap: 22.5, x: 300, y: 380, w: 0, h: 22.5, grp: 1 }], true, 'assets/pay-visa-mastercard.svg'),
     };
     Object.entries(eneba).forEach(([k, layers]) => { T[k] = [{ ...E, layers, ...(k === 'Evix/Eneba' ? { ink: '#0b0b10' } : {}) }]; });
+    ['Apple Pay', 'Google Pay'].forEach(b => { T[b + '/Eneba'] = [Component.pay(b, 600, 900)]; });
     Object.values(T).forEach(specs => specs.forEach(s => {
       const { w: W, h: H } = s;
+      if (s.apple) { s.base = { w: W, h: H, name: s.name, scale: s.scale, isBase: true, apple: true, layers: s.baseLayers }; return; }
       let k = Math.min(W / 323, (W / H > 0.8 ? 0.3 : 0.4) * H / 165);
       const layers = s.layers.filter(l => !(l.src || '').includes('pattern')).map(l => ({ ...l }));
       const top = layers[1], logo = layers[2], G = layers.filter(l => l.grp), aT = top.y + top.h + 0.03 * H;
@@ -251,26 +283,42 @@ class Component extends DCLogic {
     }));
     return T;
   })();
+  shrink(im, w, h) {
+    let c = im, cw = im.naturalWidth || im.width, ch = im.naturalHeight || im.height;
+    while (cw / 2 >= w && ch / 2 >= h) { const n = document.createElement('canvas'); cw = Math.ceil(cw / 2); ch = Math.ceil(ch / 2); n.width = cw; n.height = ch; const x = n.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(c, 0, 0, cw, ch); c = n; }
+    return c;
+  }
   compose(spec) {
     const { layers, w: W, h: H } = spec;
     return Promise.all(layers.map(l => l.src ? this.loadImg(l.src) : Promise.resolve(null))).then(ims => {
       const sc = spec.scale || 1, cv = document.createElement('canvas'); cv.width = W * sc; cv.height = H * sc;
-      const ctx = cv.getContext('2d'); ctx.scale(sc, sc);
+      const ctx = cv.getContext('2d'); ctx.scale(sc, sc); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
       ims.forEach((im, i) => {
         const l = layers[i];
         if (l.mesh) { this.mesh(ctx, W, H); return; }
+        if (l.appleBg) { this.appleBg(ctx, W, H); return; }
+        if (l.tiles) { ctx.save(); ctx.globalAlpha = l.alpha; ctx.fillStyle = '#ffffff'; l.tiles.forEach(t => { const k = t.s / 42.0586, mir = t.t.endsWith('p'); ctx.save(); ctx.translate(mir ? t.x + t.s : t.x, t.y); ctx.scale(mir ? -k : k, k); ctx.fill(new Path2D(t.t[0] === 'A' ? Component.PA : Component.PB)); ctx.restore(); }); ctx.restore(); return; }
         if (l.runs) { const wt = l.weight || 700; let fs = l.cap / (this.capRatio || 0.7); ctx.font = `${wt} ${fs}px RooftopCard`; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; let ws = l.runs.map(r => ctx.measureText(r.t).width), tw = ws.reduce((a, b) => a + b, 0); if (l.maxW && tw > l.maxW) { fs *= l.maxW / tw; ctx.font = `${wt} ${fs}px RooftopCard`; ws = l.runs.map(r => ctx.measureText(r.t).width); tw = ws.reduce((a, b) => a + b, 0); } let cx = l.align === 'right' ? l.x - tw : l.align === 'left' ? l.x : l.x - tw / 2; l.runs.forEach((r, n) => { ctx.fillStyle = r.color; ctx.fillText(r.t, cx, l.y + l.h); cx += ws[n]; }); return; }
         if (l.text) { ctx.font = `700 ${l.cap / (this.capRatio || 0.7)}px RooftopCard`; ctx.fillStyle = l.color; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.fillText(l.text, l.x, l.y + l.h); return; }
         if (!im) return;
-        if (l.cover) { const r = Math.max(W / im.naturalWidth, H / im.naturalHeight), w = im.naturalWidth * r, h = im.naturalHeight * r; ctx.drawImage(im, (W - w) / 2, (H - h) / 2, w, h); return; }
+        if (l.cover) { const r = Math.max(W / im.naturalWidth, H / im.naturalHeight), w = im.naturalWidth * r, h = im.naturalHeight * r; ctx.drawImage(this.shrink(im, w * sc, h * sc), (W - w) / 2, (H - h) / 2, w, h); return; }
         ctx.save();
         if (l.alpha) ctx.globalAlpha = l.alpha;
         if (l.clip) { const [cx, cy, cw, ch] = l.clip; const x0 = Math.round(cx), x1 = Math.round(cx + cw); ctx.beginPath(); ctx.rect(x0, Math.floor(cy), x1 - x0, Math.ceil(ch) + 1); ctx.clip(); }
-        ctx.drawImage(im, l.x, l.y, l.w, l.h);
+        ctx.drawImage(this.shrink(im, l.w * sc, l.h * sc), l.x, l.y, l.w, l.h);
         ctx.restore();
       });
       return cv;
     });
+  }
+  appleBg(ctx, W, H) {
+    const g = ctx.createLinearGradient(W * 0.35, 0, W * 0.75, H);
+    [[0, '#454545'], [0.35, '#2d2d2e'], [0.7, '#131315'], [1, '#09080b']].forEach(([o, c]) => g.addColorStop(o, c));
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.save(); ctx.translate(0, H); ctx.scale(0.95 * W, 0.32 * H);
+    const r = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+    for (let i = 0; i <= 10; i++) { const t = i / 10; r.addColorStop(t, `rgba(78,58,88,${(0.55 * Math.exp(-3 * t * t)).toFixed(3)})`); }
+    ctx.fillStyle = r; ctx.fillRect(-0.1, -3.2, 1.3, 3.3); ctx.restore();
   }
   mesh(ctx, W, H) {
     ctx.fillStyle = '#f4f3f8'; ctx.fillRect(0, 0, W, H);
@@ -370,19 +418,28 @@ class Component extends DCLogic {
     const o = this.opts(), n = s.num;
     const cv = document.createElement('canvas');
     const sc = s.scale || 1; cv.width = s.w * sc; cv.height = s.h * sc;
-    const ctx = cv.getContext('2d'); ctx.scale(sc, sc);
+    const ctx = cv.getContext('2d'); ctx.scale(sc, sc); ctx.imageSmoothingQuality = 'high';
     const bg = this.imgs[this.tk + '|' + this.sk(s)];
     if (bg) ctx.drawImage(bg, 0, 0, s.w, s.h);
     if (v == null) return cv.toDataURL('image/png');
     const text = this.label(v);
+    if (n.prefix) {
+      let fs = n.cap / this.capRatio; ctx.font = `700 ${fs}px RooftopCard`; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+      let w1 = ctx.measureText(n.prefix).width, w2 = ctx.measureText(text).width, pd = n.pill ? 0.32 * n.cap : 0, tw = w1 + w2 + 2 * pd;
+      if (tw > n.maxW) { const kk = n.maxW / tw; fs *= kk; pd *= kk; ctx.font = `700 ${fs}px RooftopCard`; w1 = ctx.measureText(n.prefix).width; w2 = ctx.measureText(text).width; tw = w1 + w2 + 2 * pd; }
+      const x0 = n.cx - tw / 2, ch = fs * this.capRatio; ctx.fillStyle = '#ffffff'; ctx.fillText(n.prefix, x0, n.baseline);
+      if (n.pill) { ctx.beginPath(); ctx.roundRect(x0 + w1, n.baseline - 1.16 * ch, w2 + 2 * pd, 1.32 * ch, 0.34 * ch); ctx.fill(); }
+      ctx.fillStyle = n.color; ctx.fillText(text, x0 + w1 + pd, n.baseline);
+      return cv.toDataURL('image/png');
+    }
     let size = n.cap / this.capRatio;
     ctx.font = `${o.weight} ${size}px RooftopCard`;
     const w = ctx.measureText(text).width;
     if (w > n.maxW) { size = size * n.maxW / w; ctx.font = `${o.weight} ${size}px RooftopCard`; }
-    ctx.fillStyle = s.ink || '#ffffff';
+    ctx.fillStyle = n.color || s.ink || '#ffffff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'alphabetic';
-    ctx.fillText(text, s.w / 2, n.baseline);
+    ctx.save(); ctx.translate(n.cx != null ? n.cx : s.w / 2, n.baseline); if (n.rot) ctx.rotate(n.rot); ctx.fillText(text, 0, 0); ctx.restore();
     return cv.toDataURL('image/png');
   }
   items() { const out = this.specs.map(s => ({ v: null, s: s.base, id: 'base@' + this.sk(s.base) })); this.parse().valid.forEach(v => this.specs.forEach(s => out.push({ v, s, id: v + '@' + this.sk(s) }))); return out; }
