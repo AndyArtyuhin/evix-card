@@ -217,7 +217,7 @@ class Component extends DCLogic {
   static PB = 'M0 15.2582L0 0C23.1881 0 42.0586 18.8705 42.0586 42.0589L26.8004 42.0589C26.8004 27.2804 14.7782 15.2582 0 15.2582Z';
   static PAYCFG = {
     'Apple Pay': { AR: 0.577, bg: { appleBg: true }, phone: 'assets/applepay-phone.png', alpha: 0.24, t1: 'Virtual Apple', one: 'Virtual Apple Pay Card', accent: '#2fd0ff' },
-    'Google Pay': { AR: 0.56, bg: { src: 'assets/back-google.png', cover: true }, bgLand: { src: 'assets/back-google-land.png', cover: true }, phone: 'assets/googlepay-phone.png', alpha: 0.28, t1: 'Virtual Google', one: 'Virtual Google Pay Card', accent: '#ffffff', note: true }
+    'Google Pay': { AR: 0.667, bg: { src: 'assets/back-google.png', cover: true }, bgLand: { src: 'assets/back-google-land.png', cover: true }, phone: 'assets/googlepay-phone.png', alpha: 0.28, t1: 'Virtual Google', one: 'Virtual Google Pay Card', accent: '#ffffff', note: true }
   };
   static pay(bn, W, H) { const n = Component.payB(bn, W, H, true), b = Component.payB(bn, W, H, false); return { ...n, baseLayers: b.baseLayers }; }
   static payB(bn, W, H, nm) {
